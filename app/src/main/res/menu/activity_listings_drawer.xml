@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/nav_browse"
+            android:icon="@android:drawable/ic_menu_view"
+            android:title="@string/browse" />
+        <item
+            android:id="@+id/nav_nearme"
+            android:icon="@android:drawable/ic_dialog_map"
+            android:title="@string/near_me" />
+        <item
+            android:id="@+id/nav_garage"
+            android:icon="@android:drawable/ic_menu_myplaces"
+            android:title="@string/garage" />
+        <item
+            android:id="@+id/nav_mybeacons"
+            android:icon="@android:drawable/stat_sys_data_bluetooth"
+            android:title="@string/my_beacons"/>
+        <item
+            android:id="@+id/nav_liked"
+            android:icon="@drawable/like_active"
+            android:title="@string/liked" />
+        <item
+            android:id="@+id/nav_safezone"
+            android:icon="@drawable/dealerwerx_safezone"
+            android:title="@string/safezone" />
+        <item
+            android:id="@+id/nav_scavenger"
+            android:icon="@android:drawable/ic_menu_zoom"
+            android:title="@string/scavenger" />
+        <item
+            android:id="@+id/nav_videos"
+            android:icon="@android:drawable/ic_media_play"
+            android:title="@string/videos" />
+    </group>
+</menu>

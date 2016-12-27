@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="15sp"
+        android:text="Are you sure you wish to request a 24-hour hold on this vehicle?"
+        android:paddingBottom="5dp"
+        android:textColor="@color/loginBackground"
+        />
+    <TextView
+        android:id="@+id/safezone_enabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:text="@string/safezone_disabled"
+        />
+</LinearLayout>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        tools:context="deanmyers.com.dealerwerx.ListingsActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <include layout="@layout/custom_title"/>
+        </android.support.design.widget.AppBarLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:baselineAligned="false"
+                android:id="@+id/bottom_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/loginBackground"
+                android:weightSum="5"
+                android:padding="2dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+                <LinearLayout
+                    android:id="@+id/action_listing_hold"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@color/loginBackground"
+                        android:src="@drawable/hold_icon"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/buttonsAccent"
+                        android:paddingBottom="4dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Hold"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textSize="12sp"
+                        android:textColor="@color/buttonsAccent" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/action_listing_makeoffer"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@color/loginBackground"
+                        android:src="@drawable/make_offer_icon"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/buttonsAccent"
+                        android:paddingBottom="4dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Make Offer"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textSize="11sp"
+                        android:textColor="@color/buttonsAccent" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/action_listing_buy"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@color/loginBackground"
+                        android:src="@drawable/buy_icon"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/buttonsAccent"
+                        android:paddingBottom="4dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Buy"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textSize="12sp"
+                        android:textColor="@color/buttonsAccent" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/action_listing_like"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@color/loginBackground"
+                        android:src="@drawable/like_icon"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/buttonsAccent"
+                        android:paddingBottom="4dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Like"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textSize="12sp"
+                        android:textColor="@color/buttonsAccent" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/action_listing_share"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@color/loginBackground"
+                        android:src="@drawable/com_facebook_button_icon"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/buttonsAccent"
+                        android:paddingBottom="4dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Share"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textSize="12sp"
+                        android:textColor="@color/buttonsAccent" />
+                </LinearLayout>
+            </LinearLayout>
+            <ScrollView
+                android:id="@+id/detail_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:layout_above="@id/bottom_buttons"/>
+        </RelativeLayout>
+
+        <!--<include layout="@layout/content_addlisting" />-->
+
+    </LinearLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:theme="@style/DarkAppTheme"
+        app:menu="@menu/activity_listings_drawer"
+        />
+
+</android.support.v4.widget.DrawerLayout>

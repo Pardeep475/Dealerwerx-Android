@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/add_image_container">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_images_max_5"
+        android:textSize="17sp"
+        android:textAlignment="center"
+
+        android:layout_marginBottom="10dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_container"
+        android:orientation="horizontal"
+
+        android:weightSum="1"/>
+    <Button
+        android:id="@+id/action_addimage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_image"/>
+</LinearLayout>

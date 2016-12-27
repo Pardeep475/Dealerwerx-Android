@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryDark">#ffffff</color>
+
+    <color name="loginAccent">#ffffff</color>
+    <color name="buttonsAccent">#aeaeae</color>
+    <color name="buttonsSelectedAccent">#fbfbfb</color>
+    <color name="loginBackground">#323234</color>
+    <color name="greenAccent">#8DC437</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="accent_material_light_1">#ff4040</color>
+</resources>

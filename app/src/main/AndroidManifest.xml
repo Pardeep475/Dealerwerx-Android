@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="deanmyers.com.dealerwerx">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:name=".DealerwerxApplication">
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/DarkAppTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".RegisterActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/DarkAppTheme" />
+        <activity
+            android:name=".TermsOfService"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/DarkAppTheme">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="deanmyers.com.dealerwerx.TermsOfService" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".ListingsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".VideosActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".ScavengerListingsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".ListingDetailActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".ScavengerListingDetailActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".AddListingActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".UpdateListingActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".RequireMoreInformationActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".GarageActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".ListingPickerActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".MyBeaconsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".NearMeListingsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".LikedListingsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".SafeZoneActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".AddBeaconActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+
+        <receiver android:name="deanmyers.com.dealerwerx.Services.BootReceiver"/>
+
+        <service android:name=".Services.BeaconService"/>
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider1081419901894512"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+    </application>
+
+</manifest>

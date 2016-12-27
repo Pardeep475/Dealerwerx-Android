@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:background="@color/loginBackground"
+    android:id="@+id/toolbar"
+    android:text="">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp">
+        <ImageView
+            android:layout_width="400dp"
+            android:layout_height="60dp"
+            android:scaleType="fitCenter"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:id="@+id/login_logo"
+            app:srcCompat="@drawable/logo"
+            android:adjustViewBounds="true"
+            />
+        <TextView
+            android:id="@+id/page_title_primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_logo"
+            android:text="@string/placeholder"
+            android:textColor="@color/loginAccent"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:padding="5dp"/>
+        <TextView
+            android:id="@+id/page_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/page_title_primary"
+            android:text="@string/placeholder"
+            android:textColor="@color/loginAccent"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:paddingBottom="5dp"/>
+
+    </RelativeLayout>
+</android.support.v7.widget.Toolbar>

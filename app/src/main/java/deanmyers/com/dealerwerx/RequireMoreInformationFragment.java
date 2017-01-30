@@ -114,6 +114,7 @@ public class RequireMoreInformationFragment extends TitleCompatFragment {
                     currentInformation.getLastName(),
                     currentInformation.getEmail(),
                     phoneNumber,
+                    currentInformation.getIsAgent(),
                     currentInformation.getAccessToken()
             );
 

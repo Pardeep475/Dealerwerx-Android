@@ -57,13 +57,13 @@ public class MotorcycleExtra extends VehicleExtra {
 
     public MotorcycleExtra(int year, String make, String model, String color, String trim, String bodyStyle, String engine, String fuelType, long kilometers) {
         this.year = year;
-        this.make = make;
-        this.model = model;
-        this.color = color;
-        this.trim = trim;
-        this.bodyStyle = bodyStyle;
-        this.engine = engine;
-        this.fuelType = fuelType;
+        this.make = make.trim();
+        this.model = model.trim();
+        this.color = color.trim();
+        this.trim = trim.trim();
+        this.bodyStyle = bodyStyle.trim();
+        this.engine = engine.trim();
+        this.fuelType = fuelType.trim();
         this.kilometers = kilometers;
     }
 

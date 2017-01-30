@@ -18,15 +18,18 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import deanmyers.com.dealerwerx.API.APIConsumer;
 import deanmyers.com.dealerwerx.API.APIResponder;
 import deanmyers.com.dealerwerx.API.UserInformation;
+import deanmyers.com.dealerwerx.Adapters.HintArrayAdapter;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -39,8 +42,21 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private EditText mPasswordConfirmView;
     private CheckBox mAcceptTosView;
+    private CheckBox mIsAgentView;
     private View mProgressView;
     private View mRegisterFormView;
+    private Spinner mCountryCodeView;
+
+    private String[] countryList = new String[]{
+            "Canada",
+            "United States",
+            "Country - Choose One"
+    };
+
+    private String[] countryCodeList = new String[]{
+            "CA",
+            "US"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
         mEmailView = (EditText)findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordConfirmView = (EditText) findViewById(R.id.password_verify);
+        mCountryCodeView = (Spinner)findViewById(R.id.country_code);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -64,6 +81,16 @@ public class RegisterActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        ArrayAdapter<String> countryAdapter = new HintArrayAdapter(
+                this,
+                R.layout.support_simple_spinner_dropdown_item,
+                countryList
+        );
+
+        countryAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        mCountryCodeView.setAdapter(countryAdapter);
+        mCountryCodeView.setSelection(countryAdapter.getCount());
 
         Button mRegisterButton = (Button) findViewById(R.id.register_button);
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
         );
 
         mAcceptTosView = (CheckBox) findViewById(R.id.accept_tos);
+        mIsAgentView = (CheckBox) findViewById(R.id.agent);
         //mAcceptTosView.setText(Html.fromHtml("I Accept the <a href=\"deanmeyers.com.dealerwerx.tos://ShowTos\">Terms of Service</a>"));
         mAcceptTosView.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -154,13 +182,19 @@ public class RegisterActivity extends AppCompatActivity {
             cancel = true;
         }
 
+        if (mCountryCodeView.getSelectedItemPosition() == countryList.length - 1) {
+            Toast.makeText(this, "You must select a country!", Toast.LENGTH_LONG).show();
+            focusView = mCountryCodeView;
+            cancel = true;
+        }
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
         } else {
             showProgress(true);
-            mAuthTask = APIConsumer.Register(firstName, lastName, email, password, new RegisterActivity.RegisterResponder());
+            mAuthTask = APIConsumer.Register(firstName, lastName, email, password, countryCodeList[mCountryCodeView.getSelectedItemPosition()], mIsAgentView.isChecked(), new RegisterActivity.RegisterResponder());
             mAuthTask.execute();
         }
     }
@@ -217,8 +251,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         public void success(UserInformation result) {
-            Toast.makeText(RegisterActivity.this, "User successfully registered!", Toast.LENGTH_LONG).show();
-            PreferencesManager.setUserInformation(result);
+            if(mIsAgentView.isChecked()){
+                Toast.makeText(RegisterActivity.this, "Thank you for registering. A Dealerwerx representitive will be in contact with you regarding your agent account activation.", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(RegisterActivity.this, "User successfully registered!", Toast.LENGTH_LONG).show();
+                PreferencesManager.setUserInformation(result);
+            }
             finish();
         }
 

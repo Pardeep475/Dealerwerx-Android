@@ -127,36 +127,98 @@ public class GarageActivity extends NavigationActivity {
                                 dialog.dismiss();
                             }
                         })
-                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("More", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialogint, int whichButton) {
-                                AlertDialog dialog = new AlertDialog.Builder(GarageActivity.this)
-                                        .setTitle("Delete Listing")
-                                        .setMessage("Are you sure you want to delete this listing?")
+                                AlertDialog.Builder alert2Builder = new AlertDialog.Builder(GarageActivity.this)
+                                        .setTitle("More Actions")
+                                        .setMessage("What action would you like to perform?");
+                                        if(listing.isExpired()){
+                                            alert2Builder.setNeutralButton("Relist", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogint, int which) {
+                                                    AlertDialog dialog = new AlertDialog.Builder(GarageActivity.this)
+                                                            .setTitle("Relist Listing")
+                                                            .setMessage("Are you sure you want to relist this listing?")
 
-                                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                                            .setPositiveButton("Relist", new DialogInterface.OnClickListener() {
 
-                                            public void onClick(DialogInterface dialog, int whichButton) {
-                                                final DialogInterface dialog1 = dialog;
-                                                APIConsumer.DeleteListingAsyncTask task = APIConsumer.DeleteListing(
-                                                        PreferencesManager.getUserInformation().getAccessToken(),
-                                                        listing,
-                                                        new APIResponder<Void>() {
-                                                            @Override
-                                                            public void success(Void result) {
-                                                                Toast.makeText(GarageActivity.this, "Listing successfully deleted!", Toast.LENGTH_LONG).show();
-                                                                updateListview();
-                                                                dialog1.dismiss();
+                                                                public void onClick(DialogInterface dialog, int whichButton) {
+                                                                    final DialogInterface dialog1 = dialog;
+                                                                    APIConsumer.RelistListingAsyncTask task = APIConsumer.RelistListing(
+                                                                            PreferencesManager.getUserInformation().getAccessToken(),
+                                                                            listing,
+                                                                            new APIResponder<Void>() {
+                                                                                @Override
+                                                                                public void success(Void result) {
+                                                                                    Toast.makeText(GarageActivity.this, "Listing successfully relisted!", Toast.LENGTH_LONG).show();
+                                                                                    updateListview();
+                                                                                    dialog1.dismiss();
+                                                                                }
+
+                                                                                @Override
+                                                                                public void error(String errorMessage) {
+                                                                                    Toast.makeText(GarageActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                                                                                    dialog1.dismiss();
+                                                                                }
+                                                                            }
+                                                                    );
+                                                                    task.execute();
+                                                                }
+
+                                                            })
+                                                            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                }
+                                                            })
+                                                            .create();
+                                                    dialog.show();
+                                                    dialogint.dismiss();
+                                                }
+                                            });
+                                        }
+                                        alert2Builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+                                            public void onClick(DialogInterface dialogint, int whichButton) {
+                                                AlertDialog dialog = new AlertDialog.Builder(GarageActivity.this)
+                                                        .setTitle("Delete Listing")
+                                                        .setMessage("Are you sure you want to delete this listing?")
+
+                                                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+                                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                                final DialogInterface dialog1 = dialog;
+                                                                APIConsumer.DeleteListingAsyncTask task = APIConsumer.DeleteListing(
+                                                                        PreferencesManager.getUserInformation().getAccessToken(),
+                                                                        listing,
+                                                                        new APIResponder<Void>() {
+                                                                            @Override
+                                                                            public void success(Void result) {
+                                                                                Toast.makeText(GarageActivity.this, "Listing successfully deleted!", Toast.LENGTH_LONG).show();
+                                                                                updateListview();
+                                                                                dialog1.dismiss();
+                                                                            }
+
+                                                                            @Override
+                                                                            public void error(String errorMessage) {
+                                                                                Toast.makeText(GarageActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                                                                                dialog1.dismiss();
+                                                                            }
+                                                                        }
+                                                                );
+                                                                task.execute();
                                                             }
 
-                                                            @Override
-                                                            public void error(String errorMessage) {
-                                                                Toast.makeText(GarageActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                                                                dialog1.dismiss();
+                                                        })
+                                                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                dialog.dismiss();
                                                             }
-                                                        }
-                                                );
-                                                task.execute();
+                                                        })
+                                                        .create();
+                                                dialog.show();
+                                                dialogint.dismiss();
                                             }
 
                                         })
@@ -164,9 +226,9 @@ public class GarageActivity extends NavigationActivity {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
                                             }
-                                        })
-                                        .create();
-                                dialog.show();
+                                        });
+                                AlertDialog alert2 = alert2Builder.create();
+                                alert2.show();
                                 dialogint.dismiss();
                             }
 

@@ -13,6 +13,9 @@ import java.io.Serializable;
 public class ImageMedia  implements Serializable {
     private String thumbnailUrl;
     private String imageUrl;
+    private int id;
+
+    public int getId() { return id; }
 
     public String getThumbnailUrl() {
         return thumbnailUrl;
@@ -22,7 +25,8 @@ public class ImageMedia  implements Serializable {
         return imageUrl;
     }
 
-    private ImageMedia(String thumbnailUrl, String imageUrl) {
+    private ImageMedia(int id, String thumbnailUrl, String imageUrl) {
+        this.id = id;
         this.thumbnailUrl = thumbnailUrl;
         this.imageUrl = imageUrl;
     }
@@ -37,6 +41,6 @@ public class ImageMedia  implements Serializable {
     }
 
     private static ImageMedia fromJsonObject(JSONObject obj) throws JSONException{
-        return new ImageMedia(obj.getString("thumbnail"), obj.getString("imageUrl"));
+        return new ImageMedia(obj.getInt("id"), obj.getString("thumbnail"), obj.getString("imageUrl"));
     }
 }

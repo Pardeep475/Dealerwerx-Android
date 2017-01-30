@@ -39,6 +39,7 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -58,6 +59,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.isseiaoki.simplecropview.CropImageView;
 
 import org.json.JSONException;
@@ -97,6 +104,8 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
     private EditText mAskingPrice;
     private EditText mLowPrice;
     private EditText mLocation;
+    private EditText mCustomerNumber;
+    private EditText mStockNumber;
     private SwitchCompat mSafeZone;
 
     private EditText mYear;
@@ -123,6 +132,7 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
     private int imageCount;
     private Bitmap[] imageList = new Bitmap[5];
     private boolean scavenger;
+    private final int PLACEPICKER_REQUEST = 1001;
 
     @Nullable
     @Override
@@ -181,6 +191,8 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
         mLowPrice = (EditText)v.findViewById(R.id.lowPrice);
         mSafeZone = (SwitchCompat)v.findViewById(R.id.safezone);
         mLocation = (EditText)v.findViewById(R.id.location);
+        mCustomerNumber = (EditText)v.findViewById(R.id.customer_number);
+        mStockNumber = (EditText)v.findViewById(R.id.stock_number);
 
         mYear = (EditText)v.findViewById(R.id.year);
         mMake = (EditText)v.findViewById(R.id.make);
@@ -198,6 +210,65 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
         mTransmission = (Spinner)v.findViewById(R.id.transmission);
         mDriveTrain = (Spinner)v.findViewById(R.id.drivetrain);
         mVin = (EditText)v.findViewById(R.id.vin);
+
+
+//        if(GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getContext()) == ConnectionResult.SUCCESS) {
+//            mLocation.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                    try {
+//                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                            startActivityForResult(builder.build(getActivity()), PLACEPICKER_REQUEST);
+//                            return true;
+//                        }
+//                    } catch (GooglePlayServicesRepairableException e) {
+//                        return false;
+//                    } catch (GooglePlayServicesNotAvailableException e) {
+//                        return false;
+//                    }
+//                    return true;
+//                }
+//            });
+//        }
+
+
+        if(GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getContext()) == ConnectionResult.SUCCESS) {
+            mLocation.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(hasFocus){
+                        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                        try {
+                            startActivityForResult(builder.build(getActivity()), PLACEPICKER_REQUEST);
+                        } catch (GooglePlayServicesRepairableException e) {
+                        } catch (GooglePlayServicesNotAvailableException e) {
+                        }
+                    }
+                }
+            });
+        }
+
+//        ImageButton mLocationOpen = (ImageButton)v.findViewById(R.id.location_open);
+//
+//        if(GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getContext()) == ConnectionResult.SUCCESS) {
+//            mLocationOpen.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                    try {
+//                        startActivityForResult(builder.build(getActivity()), PLACEPICKER_REQUEST);
+//                    } catch (GooglePlayServicesRepairableException e) {
+//                    } catch (GooglePlayServicesNotAvailableException e) {
+//                    }
+//                }
+//            });
+//        }else{
+//            mLocationOpen.setVisibility(View.GONE);
+//        }
 
         switch(mType){
             case Car:
@@ -217,9 +288,14 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
         if(scavenger) {
             ((View)mLowPrice.getParent()).setVisibility(View.GONE);
             ((View)mSafeZone).setVisibility(View.GONE);
-
+            ((View)mCustomerNumber.getParent()).setVisibility(View.GONE);
+            ((View)mStockNumber.getParent()).setVisibility(View.GONE);
             mLowPrice = mAskingPrice;
         }else{
+            if(!PreferencesManager.getUserInformation().getIsAgent()){
+                ((View)mCustomerNumber.getParent()).setVisibility(View.GONE);
+                ((View)mStockNumber.getParent()).setVisibility(View.GONE);
+            }
             ((View)mLookingFor).setVisibility(View.GONE);
         }
 
@@ -366,6 +442,7 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
         return v;
     }
 
+
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_PHOTO_PERMISSIONS = 1;
 
@@ -421,15 +498,11 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
             }
 
         if(TextUtils.isEmpty(mDescription.getText())){
-            cancel = true;
-            mFocusView = mDescription;
-            mDescription.setError("You must provide a description!");
+            mDescription.setText("-");
         }
 
         if(TextUtils.isEmpty(mAskingPrice.getText())){
-            cancel = true;
-            mFocusView = mAskingPrice;
-            mAskingPrice.setError("You must provide a asking price!");
+            mAskingPrice.setText("-1");
         }else{
             try{
                 double value = Double.parseDouble(mAskingPrice.getText().toString().trim());
@@ -441,9 +514,7 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
         }
 
         if(TextUtils.isEmpty(mLowPrice.getText())){
-            cancel = true;
-            mFocusView = mLowPrice;
-            mLowPrice.setError("You must provide a low price!");
+            mLowPrice.setText("-1");
         }else{
             try{
                 double value = Double.parseDouble(mLowPrice.getText().toString().trim());
@@ -465,19 +536,28 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
 
         }
 
+        Long customerNumber = null;
+
+        if(!PreferencesManager.getUserInformation().getIsAgent() || TextUtils.isEmpty(mCustomerNumber.getText())){
+            customerNumber = null;
+        }else{
+            try{
+                customerNumber = Long.parseLong(mCustomerNumber.getText().toString().trim());
+            }catch(Exception e){
+                cancel = true;
+                mFocusView = mCustomerNumber;
+                mCustomerNumber.setError("Invalid customer number!");
+            }
+        }
 
         if(TextUtils.isEmpty(mLocation.getText())){
-            cancel = true;
-            mFocusView = mLocation;
-            mLocation.setError("You must provide a location!");
+            mLocation.setText("-");
         }
 
         switch (mType){
             case Car:
                 if(TextUtils.isEmpty(mInteriorColor.getText())){
-                    cancel = true;
-                    mFocusView = mInteriorColor;
-                    mInteriorColor.setError("You must provide an interior color!");
+                    mInteriorColor.setText("-");
                 }
                 if(TextUtils.isEmpty(mExteriorColor.getText())){
                     cancel = true;
@@ -485,9 +565,7 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                     mExteriorColor.setError("You must provide an exterior color!");
                 }
                 if(TextUtils.isEmpty(mDoors.getText())){
-                    cancel = true;
-                    mFocusView = mDoors;
-                    mDoors.setError("You must provide the number of doors!");
+                    mDoors.setText("0");
                 }else{
                     try{
                         int value = Integer.parseInt(mDoors.getText().toString().trim());
@@ -500,9 +578,7 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                     }
                 }
                 if(TextUtils.isEmpty(mSeats.getText())){
-                    cancel = true;
-                    mFocusView = mSeats;
-                    mSeats.setError("You must provide the number of seats!");
+                    mSeats.setText("0");
                 }else{
                     try{
                         int value = Integer.parseInt(mSeats.getText().toString().trim());
@@ -522,17 +598,8 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                     mFocusView.requestFocus();
                     return;
                 }
-                if(((String)mDriveTrain.getSelectedItem()).endsWith("Select One")){
-                    cancel = true;
-                    mFocusView = mDriveTrain;
-                    Toast.makeText(getContext(), "You must provide the vehicles drivetrain!", Toast.LENGTH_LONG).show();
-                    mFocusView.requestFocus();
-                    return;
-                }
                 if(TextUtils.isEmpty(mVin.getText())){
-                    cancel = true;
-                    mFocusView = mVin;
-                    mVin.setError("You must provide the VIN number of the vehicle!");
+                    mVin.setText("-");
                 }
             case Motorcycle:
             case Boat:
@@ -563,26 +630,13 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                     mModel.setError("You must provide the model name!");
                 }
                 if(TextUtils.isEmpty(mTrim.getText())){
-                    cancel = true;
-                    mFocusView = mTrim;
-                    mTrim.setError("You must provide the vehicles trim!");
+                    mTrim.setText("-");
                 }
                 if(TextUtils.isEmpty(mBodyStyle.getText())){
-                    cancel = true;
-                    mFocusView = mBodyStyle;
-                    mBodyStyle.setError("You must provide the body style!");
+                    mBodyStyle.setText("-");
                 }
                 if(TextUtils.isEmpty(mEngine.getText())){
-                    cancel = true;
-                    mFocusView = mEngine;
-                    mEngine.setError("You must provide the engine specifications!");
-                }
-                if(((String)mFuelType.getSelectedItem()).endsWith("Select One")){
-                    cancel = true;
-                    mFocusView = mFuelType;
-                    Toast.makeText(getContext(), "You must provide the vehicles fuel type!", Toast.LENGTH_LONG).show();
-                    mFocusView.requestFocus();
-                    return;
+                    mEngine.setText("-");
                 }
                 if(TextUtils.isEmpty(mKilometers.getText())){
                     cancel = true;
@@ -622,12 +676,12 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                             mTrim.getText().toString().trim(),
                             mBodyStyle.getText().toString().trim(),
                             mEngine.getText().toString().trim(),
-                            ((String)mFuelType.getSelectedItem()).trim(),
+                            ((String)mFuelType.getSelectedItem()).endsWith("Select One") ? "-" : ((String)mFuelType.getSelectedItem()).trim(),
                             Long.parseLong(mKilometers.getText().toString().trim()),
                             Integer.parseInt(mDoors.getText().toString().trim()),
                             Integer.parseInt(mSeats.getText().toString().trim()),
                             ((String)mTransmission.getSelectedItem()).trim(),
-                            ((String)mDriveTrain.getSelectedItem()).trim(),
+                            ((String)mDriveTrain.getSelectedItem()).endsWith("Select One") ? "-" : ((String)mDriveTrain.getSelectedItem()).trim(),
                             mVin.getText().toString().trim()
                     );
                     break;
@@ -640,7 +694,7 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                             mTrim.getText().toString().trim(),
                             mBodyStyle.getText().toString().trim(),
                             mEngine.getText().toString().trim(),
-                            ((String)mFuelType.getSelectedItem()).trim(),
+                            ((String)mFuelType.getSelectedItem()).endsWith("Select One") ? "-" : ((String)mFuelType.getSelectedItem()).trim(),
                             Long.parseLong(mKilometers.getText().toString().trim())
                     );
                     break;
@@ -653,7 +707,7 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                             mTrim.getText().toString().trim(),
                             mBodyStyle.getText().toString().trim(),
                             mEngine.getText().toString().trim(),
-                            ((String)mFuelType.getSelectedItem()).trim(),
+                            ((String)mFuelType.getSelectedItem()).endsWith("Select One") ? "-" : ((String)mFuelType.getSelectedItem()).trim(),
                             Long.parseLong(mKilometers.getText().toString().trim())
                     );
                     break;
@@ -674,14 +728,25 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                         mTrim.getText().toString().trim()
                 );
 
+
+            String stockNumber = PreferencesManager.getUserInformation().getIsAgent() ? mStockNumber.getText().toString().trim() : null;
+
+            if(stockNumber != null && stockNumber.length() == 0)
+                stockNumber = null;
+
+
+
+
             Vehicle vehicle = new Vehicle(
                     title.trim(),
                     mDescription.getText().toString().trim(),
+                    stockNumber,
                     mType,
                     mType.toString(),
                     extra,
                     null
             );
+
 
             Listing listing = new Listing(
                     Double.parseDouble(mAskingPrice.getText().toString().trim()),
@@ -689,6 +754,7 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                     mSafeZone.isChecked(),
                     mLookingFor.isChecked(),
                     mLocation.getText().toString().trim(),
+                    customerNumber,
                     vehicle
             );
             hideSoftKeyboard();
@@ -705,9 +771,9 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                                     PreferencesManager.getUserInformation().getAccessToken(),
                                     result.getId(),
                                     imageList[i],
-                                    new APIResponder<Void>() {
+                                    new APIResponder<Listing>() {
                                         @Override
-                                        public void success(Void result) {
+                                        public void success(Listing result) {
                                         }
 
                                         @Override
@@ -829,7 +895,18 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK) {
+
+        if (requestCode == PLACEPICKER_REQUEST){
+            if(resultCode == RESULT_OK){
+                Place place = PlacePicker.getPlace(getActivity(), data);
+                if(place.getAddress().length() > 0){
+                    mLocation.setText(place.getAddress());
+                }else{
+                    mLocation.setText(place.getName());
+                }
+            }
+        }
+        else if (resultCode == RESULT_OK) {
             Uri targetUri = data == null ? imageUri : data.getData();
 
             Bitmap newBitmap;
@@ -901,93 +978,10 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                     @Override
                     public void onClick(View v) {
                         try {
-                            final ImageView newImageView = new ImageView(getActivity());
-                            final ViewGroup container = (ViewGroup) getView().findViewById(R.id.image_container);
-
                             Bitmap bitmap = cropView.getCroppedBitmap();
 
-                            DisplayMetrics dimension = new DisplayMetrics();
-                            getActivity().getWindowManager().getDefaultDisplay().getMetrics(dimension);
-                            int w = dimension.widthPixels;
-                            int h = dimension.heightPixels;
+                            addImage(bitmap, false, 0);
 
-                            final int THUMBSIZE = (Math.max(w, h) / 5) - 4;
-
-                            Bitmap thumbImage = ThumbnailUtils.extractThumbnail(bitmap,
-                                    THUMBSIZE, THUMBSIZE);
-
-                            int index = imageCount++;
-                            imageList[index] = bitmap;
-
-                            newImageView.setPadding(2, 2, 2, 2);
-                            newImageView.setImageBitmap(thumbImage);
-                            newImageView.setAdjustViewBounds(true);
-                            newImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
-                            params.gravity = Gravity.CENTER_HORIZONTAL;
-
-                            newImageView.setLayoutParams(params);
-
-                            ((LinearLayout) container).setWeightSum(imageCount);
-
-                            final Bitmap finalBitmap = bitmap;
-                            final Button mAddImage = (Button) getView().findViewById(R.id.action_addimage);
-
-                            if (imageCount == 5)
-                                mAddImage.setEnabled(false);
-
-                            newImageView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    final Dialog nagDialog = new Dialog(getActivity(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-                                    nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                    nagDialog.setContentView(R.layout.preview_image);
-                                    Button btnClose = (Button) nagDialog.findViewById(R.id.action_close);
-                                    Button btnDelete = (Button) nagDialog.findViewById(R.id.action_delete);
-                                    ImageView ivPreview = (ImageView) nagDialog.findViewById(R.id.preview);
-                                    ivPreview.setImageBitmap(finalBitmap);
-
-                                    btnClose.setOnClickListener(new Button.OnClickListener() {
-                                        @Override
-                                        public void onClick(View arg0) {
-                                            nagDialog.dismiss();
-                                        }
-                                    });
-
-                                    btnDelete.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            container.removeView(newImageView);
-
-                                            int index = -1;
-
-                                            for (int i = 0; i < imageList.length; i++) {
-                                                if (imageList[i] == finalBitmap) {
-                                                    index = i;
-                                                    imageList[i] = null;
-                                                }
-                                            }
-
-                                            if (index != -1) {
-                                                for (int i = index; i < imageList.length - 1; i++) {
-                                                    imageList[i] = imageList[i + 1];
-                                                }
-                                                imageList[imageList.length - 1] = null;
-                                                imageCount--;
-                                                ((LinearLayout) container).setWeightSum(imageCount);
-                                                mAddImage.setEnabled(true);
-                                                Toast.makeText(getActivity(), "Image successfully deleted!", Toast.LENGTH_LONG).show();
-                                            }
-
-                                            nagDialog.dismiss();
-                                        }
-                                    });
-                                    nagDialog.show();
-                                }
-                            });
-
-                            container.addView(newImageView);
                         }catch(Exception e) {
 
                         }
@@ -1004,6 +998,96 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
         }
     }
 
+    public void addImage(Bitmap bitmap, final boolean isApi, final int apiId){
+        final ImageView newImageView = new ImageView(getActivity());
+        final ViewGroup container = (ViewGroup) getView().findViewById(R.id.image_container);
+
+        DisplayMetrics dimension = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dimension);
+        int w = dimension.widthPixels;
+        int h = dimension.heightPixels;
+
+        final int THUMBSIZE = (Math.max(w, h) / 5) - 4;
+
+        Bitmap thumbImage = ThumbnailUtils.extractThumbnail(bitmap,
+                THUMBSIZE, THUMBSIZE);
+
+        int index = imageCount++;
+        imageList[index] = bitmap;
+
+        newImageView.setPadding(2, 2, 2, 2);
+        newImageView.setImageBitmap(thumbImage);
+        newImageView.setAdjustViewBounds(true);
+        newImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+
+        newImageView.setLayoutParams(params);
+
+        ((LinearLayout) container).setWeightSum(imageCount);
+
+        final Bitmap finalBitmap = bitmap;
+        final Button mAddImage = (Button) getView().findViewById(R.id.action_addimage);
+
+        if (imageCount == 5)
+            mAddImage.setEnabled(false);
+
+        newImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog nagDialog = new Dialog(getActivity(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                nagDialog.setContentView(R.layout.preview_image);
+                Button btnClose = (Button) nagDialog.findViewById(R.id.action_close);
+                Button btnDelete = (Button) nagDialog.findViewById(R.id.action_delete);
+                ImageView ivPreview = (ImageView) nagDialog.findViewById(R.id.preview);
+                ivPreview.setImageBitmap(finalBitmap);
+
+                btnClose.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        nagDialog.dismiss();
+                    }
+                });
+
+                btnDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        container.removeView(newImageView);
+
+                        int index = -1;
+
+                        for (int i = 0; i < imageList.length; i++) {
+                            if (imageList[i] == finalBitmap) {
+                                index = i;
+                                imageList[i] = null;
+                            }
+                        }
+
+                        if (index != -1) {
+                            for (int i = index; i < imageList.length - 1; i++) {
+                                imageList[i] = imageList[i + 1];
+                            }
+                            imageList[imageList.length - 1] = null;
+                            imageCount--;
+                            ((LinearLayout) container).setWeightSum(imageCount);
+                            mAddImage.setEnabled(true);
+                            if(isApi){
+                                Toast.makeText(getActivity(), "Deleting image...", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "Image successfully deleted!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        nagDialog.dismiss();
+                    }
+                });
+                nagDialog.show();
+            }
+        });
+
+        container.addView(newImageView);
+    }
     public Uri createSaveUri() {
         return Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
     }

@@ -116,7 +116,11 @@ public class BeaconService extends IntentService implements BeaconConsumer {
     public boolean containsListingId(int id){
         for(Pair<Pair<Beacon,Listing>, Date> i : listingLifetime.values()){
             if(i.first != null && i.first.second.getId() == id){
-                return true;
+                if((new Date().getTime() - i.second.getTime()) <= 2*60*1000){
+                    return true;
+                }else{
+                    return false;
+                }
             }
         }
 
@@ -156,7 +160,7 @@ public class BeaconService extends IntentService implements BeaconConsumer {
                     Listing listing = listingLifetime.get(i).first.second;
                     Date lastSeen = listingLifetime.get(i).second;
 
-                    if((new Date().getTime() - lastSeen.getTime()) >= 1*60*1000){
+                    if((new Date().getTime() - lastSeen.getTime()) >= 240*60*1000){
                         listingLifetime.remove(i);
                         if(listing != null){
                             nManager.cancel(listing.getId());
@@ -224,8 +228,10 @@ public class BeaconService extends IntentService implements BeaconConsumer {
                             final String key = beaconToKey(uuid, major, minor);
 
                             if(listingLifetime.containsKey(key)){
-                                listingLifetime.put(key, new Pair<>(new Pair<>(b, listingLifetime.get(key).first.second), new Date()));
-                                continue;
+                                if(((new Date().getTime() - listingLifetime.get(key).second.getTime()) <= 2*60*1000)) {
+                                    listingLifetime.put(key, new Pair<>(new Pair<>(b, listingLifetime.get(key).first.second), new Date()));
+                                    continue;
+                                }
                             }
 
 
@@ -237,10 +243,10 @@ public class BeaconService extends IntentService implements BeaconConsumer {
                                     new APIResponder<Listing>() {
                                         @Override
                                         public void success(final Listing listing) {
-                                            if(!listing.isMyPost()){
+                                            if(!listing.isMyPost() && !listingLifetime.containsKey(key)){
                                                 Intent targetIntent = new Intent(BeaconService.this, NearMeListingsActivity.class);
                                                 targetIntent.putExtra("listing", listing);
-                                                PendingIntent contentIntent = PendingIntent.getActivity(BeaconService.this, 0, targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                                PendingIntent contentIntent = PendingIntent.getActivity(BeaconService.this, listing.getId(), targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                                                 final Notification.Builder builder =
                                                         new Notification.Builder(BeaconService.this)
@@ -258,6 +264,7 @@ public class BeaconService extends IntentService implements BeaconConsumer {
                                                 ImageMedia[] media = listing.getVehicle().getMedia();
                                                 if(media.length > 0){
                                                     APIConsumer.DownloadImageAsyncTask task1 = APIConsumer.DownloadImage(
+                                                            BeaconService.this,
                                                             media[0].getThumbnailUrl(),
                                                             new APIResponder<Bitmap>() {
                                                                 @Override

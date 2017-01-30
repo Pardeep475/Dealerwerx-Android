@@ -138,7 +138,11 @@ public class NavigationActivity extends TitleCompatActivity
                 startActivity(intent);
                 finish();
             }
-            if(id == R.id.nav_nearme){
+            else if(id == R.id.nav_maps){
+                Intent intent = new Intent(this, MapsActivity.class);
+                startActivity(intent);
+            }
+            else if(id == R.id.nav_nearme){
                 Intent intent = new Intent(this, NearMeListingsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -146,6 +150,12 @@ public class NavigationActivity extends TitleCompatActivity
             }
             else if(id == R.id.nav_scavenger){
                 Intent intent = new Intent(this, ScavengerListingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+            else if(id == R.id.nav_search){
+                Intent intent = new Intent(this, SearchActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();

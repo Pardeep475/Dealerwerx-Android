@@ -39,6 +39,30 @@
             android:maxLines="1"
             />
     </android.support.design.widget.TextInputLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/safezone_only"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/date1"
+            android:text="Appointment Date 1 - Choose One"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:padding="3dp"/>
+        <Button
+            android:id="@+id/date2"
+            android:text="Appointment Date 2 - Choose One"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:padding="3dp"/>
+        <Button
+            android:id="@+id/date3"
+            android:text="Appointment Date 3 - Choose One"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:padding="3dp"/>
+    </LinearLayout>
     <TextView
         android:id="@+id/safezone_enabled"
         android:layout_width="match_parent"

@@ -16,6 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.w3c.dom.Text;
 
 import java.util.List;
@@ -49,25 +51,10 @@ public class ListingsAdapter extends ArrayAdapter<Listing> {
 
         Vehicle vehicle = listing.getVehicle();
 
-        switch(vehicle.getType())
-        {
-            case Car:
-                view = inflater.inflate(R.layout.rows_listings, parent, false);
-                break;
-            case Motorcycle:
-                view = inflater.inflate(R.layout.rows_listings, parent, false);
-                break;
-            case Boat:
-                view = inflater.inflate(R.layout.rows_listings, parent, false);
-                break;
-            case Equipment:
-                view = inflater.inflate(R.layout.rows_listings, parent, false);
-                break;
-            case Other:
-                view = inflater.inflate(R.layout.rows_listings, parent, false);
-                break;
-            default:
-                view = null;
+        if(convertView == null){
+            view = inflater.inflate(R.layout.rows_listings, parent, false);
+        }else{
+            view = convertView;
         }
 
         if(view == null)
@@ -75,15 +62,23 @@ public class ListingsAdapter extends ArrayAdapter<Listing> {
 
         final ImageView vehicleImage = (ImageView)view.findViewById(R.id.image_vehicle);
 
+        String actualTitle = vehicle.getTitle().toUpperCase();
+
         switch(vehicle.getType()){
             case Car:
                 vehicleImage.setImageResource(R.drawable.car_icon);
+                CarExtra cExtra = (CarExtra)vehicle.getExtra();
+                actualTitle = String.format(Locale.CANADA, "%d %s %s", cExtra.getYear(), cExtra.getMake(), cExtra.getModel()).toUpperCase();
                 break;
             case Motorcycle:
                 vehicleImage.setImageResource(R.drawable.motorcycle_icon);
+                MotorcycleExtra mExtra = (MotorcycleExtra)vehicle.getExtra();
+                actualTitle = String.format(Locale.CANADA, "%d %s %s", mExtra.getYear(), mExtra.getMake(), mExtra.getModel()).toUpperCase();
                 break;
             case Boat:
                 vehicleImage.setImageResource(R.drawable.boat_icon);
+                BoatExtra bExtra = (BoatExtra)vehicle.getExtra();
+                actualTitle = String.format(Locale.CANADA, "%d %s %s", bExtra.getYear(), bExtra.getMake(), bExtra.getModel()).toUpperCase();
                 break;
             case Equipment:
                 vehicleImage.setImageResource(R.drawable.equipment_icon);
@@ -102,8 +97,8 @@ public class ListingsAdapter extends ArrayAdapter<Listing> {
         TextView description = (TextView)view.findViewById(R.id.text_description);
 
         description.setText(vehicle.getDescription());
-        title.setText(vehicle.getTitle());
-        askingPrice.setText(String.format(Locale.CANADA, "$%.2f", listing.getAskingPrice()));
+        title.setText(actualTitle);
+        askingPrice.setText(listing.isExpired() ? "EXPIRED" : (listing.getAskingPrice() < 0 ? "CONTACT" : String.format(Locale.CANADA, "$%.2f", listing.getAskingPrice())));
         location.setText(listing.getLocation());
 
         if(listing.isSafeZone()) {
@@ -118,19 +113,20 @@ public class ListingsAdapter extends ArrayAdapter<Listing> {
         ImageMedia[] media = vehicle.getMedia();
 
         if(media != null && media.length > 0){
-            APIConsumer.DownloadImageAsyncTask task = APIConsumer.DownloadImage(media[0].getThumbnailUrl(), new APIResponder<Bitmap>() {
-                @Override
-                public void success(Bitmap result) {
-                    vehicleImage.setImageBitmap(result);
-                }
+            Picasso.with(getContext()).load(media[0].getThumbnailUrl()).fit().into(vehicleImage);
+//            APIConsumer.DownloadImageAsyncTask task = APIConsumer.DownloadImage(media[0].getThumbnailUrl(), new APIResponder<Bitmap>() {
+//                @Override
+//                public void success(Bitmap result) {
+//                    vehicleImage.setImageBitmap(result);
+//                }
+//
+//                @Override
+//                public void error(String errorMessage) {
+//                    //do nothing
+//                }
+//            });
 
-                @Override
-                public void error(String errorMessage) {
-                    //do nothing
-                }
-            });
-
-            task.execute();
+            //task.execute();
         }
 
         return view;

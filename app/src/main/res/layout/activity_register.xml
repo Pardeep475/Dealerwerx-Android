@@ -92,6 +92,15 @@
 
                 </android.support.design.widget.TextInputLayout>
 
+                <android.support.v7.widget.AppCompatSpinner
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/country_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="@string/country"
+                    />
+
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -124,6 +133,13 @@
                         />
 
                 </android.support.design.widget.TextInputLayout>
+                <CheckBox
+                    android:id="@+id/agent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="I am an Agent"
+                    android:layout_marginTop="15dp"/>
                 <CheckBox
                     android:id="@+id/accept_tos"
                     android:layout_width="match_parent"

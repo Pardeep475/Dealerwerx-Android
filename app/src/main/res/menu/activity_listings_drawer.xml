@@ -6,9 +6,17 @@
             android:icon="@android:drawable/ic_menu_view"
             android:title="@string/browse" />
         <item
+            android:id="@+id/nav_maps"
+            android:icon="@drawable/maps_icon"
+            android:title="@string/maps"/>
+        <item
             android:id="@+id/nav_nearme"
             android:icon="@android:drawable/ic_dialog_map"
             android:title="@string/near_me" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@android:drawable/ic_search_category_default"
+            android:title="@string/search" />
         <item
             android:id="@+id/nav_garage"
             android:icon="@android:drawable/ic_menu_myplaces"

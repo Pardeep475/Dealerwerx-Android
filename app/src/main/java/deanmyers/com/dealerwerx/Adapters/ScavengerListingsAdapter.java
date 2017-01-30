@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -41,6 +43,7 @@ public class ScavengerListingsAdapter extends ArrayAdapter<Listing> {
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
+
         View view;
 
         LayoutInflater inflater;
@@ -53,77 +56,54 @@ public class ScavengerListingsAdapter extends ArrayAdapter<Listing> {
 
         Vehicle vehicle = listing.getVehicle();
 
-        switch(vehicle.getType())
-        {
-            case Car:
-                view = inflater.inflate(R.layout.rows_scavengerlistings_car, parent, false);
-                break;
-            case Motorcycle:
-                view = inflater.inflate(R.layout.rows_scavengerlistings_motorcycle, parent, false);
-                break;
-            case Boat:
-                view = inflater.inflate(R.layout.rows_scavengerlistings_boat, parent, false);
-                break;
-            case Equipment:
-                view = inflater.inflate(R.layout.rows_scavengerlistings_equipment, parent, false);
-                break;
-            case Other:
-                view = inflater.inflate(R.layout.rows_scavengerlistings_other, parent, false);
-                break;
-            default:
-                view = null;
+        if(convertView == null){
+            view = inflater.inflate(R.layout.rows_listings, parent, false);
+        }else{
+            view = convertView;
         }
 
         if(view == null)
             return convertView;
 
-        TextView year = (TextView)view.findViewById(R.id.text_year);
-        TextView make = (TextView)view.findViewById(R.id.text_make);
-        TextView model = (TextView)view.findViewById(R.id.text_model);
-        TextView engine = (TextView)view.findViewById(R.id.text_engine);
-        TextView description = (TextView)view.findViewById(R.id.text_description);
+        final ImageView vehicleImage = (ImageView)view.findViewById(R.id.image_vehicle);
+
+        String actualTitle = vehicle.getTitle().toUpperCase();
 
         switch(vehicle.getType()){
             case Car:
+                vehicleImage.setImageResource(R.drawable.car_icon);
                 CarExtra cExtra = (CarExtra)vehicle.getExtra();
-
-                year.setText(String.format(Locale.CANADA, "%d", cExtra.getYear()));
-                make.setText(cExtra.getMake());
-                model.setText(cExtra.getModel());
-                engine.setText(cExtra.getEngine());
+                actualTitle = String.format(Locale.CANADA, "%d %s %s", cExtra.getYear(), cExtra.getMake(), cExtra.getModel()).toUpperCase();
                 break;
             case Motorcycle:
-                MotorcycleExtra mExtra = (MotorcycleExtra) vehicle.getExtra();
-
-                year.setText(String.format(Locale.CANADA, "%d", mExtra.getYear()));
-                make.setText(mExtra.getMake());
-                model.setText(mExtra.getModel());
-                engine.setText(mExtra.getEngine());
+                vehicleImage.setImageResource(R.drawable.motorcycle_icon);
+                MotorcycleExtra mExtra = (MotorcycleExtra)vehicle.getExtra();
+                actualTitle = String.format(Locale.CANADA, "%d %s %s", mExtra.getYear(), mExtra.getMake(), mExtra.getModel()).toUpperCase();
                 break;
             case Boat:
+                vehicleImage.setImageResource(R.drawable.boat_icon);
                 BoatExtra bExtra = (BoatExtra)vehicle.getExtra();
-
-                year.setText(String.format(Locale.CANADA, "%d", bExtra.getYear()));
-                make.setText(bExtra.getMake());
-                model.setText(bExtra.getModel());
-                engine.setText(bExtra.getEngine());
+                actualTitle = String.format(Locale.CANADA, "%d %s %s", bExtra.getYear(), bExtra.getMake(), bExtra.getModel()).toUpperCase();
                 break;
             case Equipment:
+                vehicleImage.setImageResource(R.drawable.equipment_icon);
+                break;
             case Other:
-                description.setText(vehicle.getDescription());
+                vehicleImage.setImageResource(R.drawable.misc_icon);
+                break;
             default:
+                vehicleImage.setImageResource(R.drawable.misc_icon);
         }
 
         TextView title = (TextView)view.findViewById(R.id.text_title);
-        TextView approvalStatus = (TextView)view.findViewById(R.id.text_approval_status);
+        TextView askingPrice = (TextView)view.findViewById(R.id.text_asking_price);
         TextView location = (TextView)view.findViewById(R.id.text_location);
         ImageView safeZone = (ImageView)view.findViewById(R.id.image_safezone_approval);
+        TextView description = (TextView)view.findViewById(R.id.text_description);
 
-        final ImageView vehicleImage = (ImageView)view.findViewById(R.id.image_vehicle);
-
-
-        title.setText(vehicle.getTitle());
-        approvalStatus.setText(listing.getApprovalStatus());
+        description.setText(vehicle.getDescription());
+        title.setText(actualTitle);
+        askingPrice.setText(listing.getApprovalStatus());
         location.setText(listing.getLocation());
 
         if(listing.isSafeZone()) {
@@ -138,19 +118,20 @@ public class ScavengerListingsAdapter extends ArrayAdapter<Listing> {
         ImageMedia[] media = vehicle.getMedia();
 
         if(media != null && media.length > 0){
-            APIConsumer.DownloadImageAsyncTask task = APIConsumer.DownloadImage(media[0].getThumbnailUrl(), new APIResponder<Bitmap>() {
-                @Override
-                public void success(Bitmap result) {
-                    vehicleImage.setImageBitmap(result);
-                }
+            Picasso.with(getContext()).load(media[0].getThumbnailUrl()).into(vehicleImage);
+//            APIConsumer.DownloadImageAsyncTask task = APIConsumer.DownloadImage(media[0].getThumbnailUrl(), new APIResponder<Bitmap>() {
+//                @Override
+//                public void success(Bitmap result) {
+//                    vehicleImage.setImageBitmap(result);
+//                }
+//
+//                @Override
+//                public void error(String errorMessage) {
+//                    //do nothing
+//                }
+//            });
 
-                @Override
-                public void error(String errorMessage) {
-                    //do nothing
-                }
-            });
-
-            task.execute();
+            //task.execute();
         }
 
         return view;

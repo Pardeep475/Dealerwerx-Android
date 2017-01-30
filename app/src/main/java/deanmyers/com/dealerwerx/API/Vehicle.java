@@ -17,6 +17,7 @@ public class Vehicle implements Serializable {
     private String typeName;
     private VehicleExtra extra;
     private ImageMedia[] media;
+    private String stockNumber;
 
     public String getTitle() {
         return title;
@@ -42,14 +43,18 @@ public class Vehicle implements Serializable {
         return media;
     }
 
-    public Vehicle(String title, String description, VehicleType type, String typeName, VehicleExtra extra, ImageMedia[] media) {
+    public String getStockNumber() { return stockNumber; }
 
-        this.title = title;
-        this.description = description;
+
+    public Vehicle(String title, String description, String stockNumber, VehicleType type, String typeName, VehicleExtra extra, ImageMedia[] media) {
+
+        this.title = title.trim();
+        this.description = description.trim();
         this.type = type;
         this.typeName = typeName;
         this.extra = extra;
         this.media = media;
+        this.stockNumber = stockNumber;
     }
 
     public JSONObject toJsonObject() throws JSONException{
@@ -59,6 +64,7 @@ public class Vehicle implements Serializable {
         returnObject.put("description", description);
         returnObject.put("type", ""+type.asChar());
         returnObject.put("extra", extra == null ? JSONObject.NULL : extra.toJsonObject());
+        returnObject.put("stock_no", stockNumber == null ? "" : stockNumber);
 
         return returnObject;
     }
@@ -67,6 +73,7 @@ public class Vehicle implements Serializable {
         return new Vehicle(
                 obj.getString("title"),
                 obj.getString("description"),
+                obj.isNull("stock_no") ? null : obj.getString("stock_no"),
                 VehicleType.get(obj.getString("type").charAt(0)),
                 obj.getString("typeName"),
                 obj.isNull("extra") ? null : VehicleExtra.fromJsonObject(VehicleType.get(obj.getString("type").charAt(0)), obj.getJSONObject("extra")),

@@ -158,7 +158,7 @@ public class LoginActivity extends AppCompatActivity{
     private void goToListings(){
         if(BeaconService.getInstance() != null){
             try {
-                BeaconService.getInstance().setEnabled(true);
+                BeaconService.getInstance().setEnabled(PreferencesManager.getAllowBackgroundScanning());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

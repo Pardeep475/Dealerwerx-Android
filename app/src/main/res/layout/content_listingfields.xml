@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -66,17 +67,54 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/location"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_location"
-            android:inputType="text|textCapWords"
-            android:maxLines="1"
-            android:imeOptions="actionDone"
-            />
+            android:layout_height="50dp">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_location"
+                android:inputType="text|textCapWords"
+                android:maxLines="1"
+                />
+        </RelativeLayout>
     </android.support.design.widget.TextInputLayout>
-
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/customer_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Customer Number"
+                android:maxLength="20"
+                android:inputType="number"
+                android:maxLines="1"
+                />
+        </RelativeLayout>
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/stock_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Stock Number"
+                android:inputType="text|textCapCharacters"
+                android:maxLines="1"
+                android:maxLength="10"
+                android:imeOptions="actionDone"
+                />
+        </RelativeLayout>
+    </android.support.design.widget.TextInputLayout>
     <android.support.v7.widget.SwitchCompat
         android:id="@+id/safezone"
         android:layout_width="match_parent"

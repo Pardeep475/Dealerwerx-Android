@@ -163,15 +163,15 @@ If you have any questions about this Privacy Policy, please contact us.
     <string name="prompt_location">Location</string>
     <string name="color">Color</string>
     <string name="i_am_looking_for_this_vehicle">I am looking for this item</string>
-    <string name="scavenger">Scavenger</string>
+    <string name="scavenger">Scavenger Hunt</string>
     <string name="videos">Videos</string>
     <string name="safezone">SafeZone</string>
-    <string name="garage">Garage</string>
+    <string name="garage">My Garage</string>
     <string name="near_me">Near Me</string>
     <string name="facebook_app_id">1081419901894512</string>
     <string name="fb_login_protocol_scheme">fb1081419901894512</string>
-    <string name="safezone_enabled">This listing IS SafeZone approved.\nDealerwerx will aid in the necessary transactions.</string>
-    <string name="safezone_disabled">This listing is NOT SafeZone approved.\nDealwerx may have no affiliation with the seller.</string>
+    <string name="safezone_enabled">This listing is Safezone approved.\nDealerwerx will aid in the necessary transactions.</string>
+    <string name="safezone_disabled">This listing is not Safezone approved.\nDealwerx may have no affiliation with the seller.</string>
     <string name="liked">Liked</string>
     <string name="browse">Browse</string>
     <string name="my_beacons">My Beacons</string>
@@ -182,4 +182,7 @@ If you have any questions about this Privacy Policy, please contact us.
     <string name="weak">Weak</string>
     <string name="not_in_range">Not in Range</string>
     <string name="add_beacon_disclaimer">To add a beacon, please enter your 8-character activation code below.\n\nOnce a code is activated, it will become associated to your account.\n\nIf you require at any point that the beacon be disassociated, please contact support.</string>
+    <string name="maps">Maps</string>
+    <string name="country">Country</string>
+    <string name="search">Search</string>
 </resources>

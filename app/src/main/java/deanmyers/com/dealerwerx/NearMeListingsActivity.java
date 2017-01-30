@@ -169,7 +169,7 @@ public class NearMeListingsActivity extends NavigationActivity implements Locati
         fab.setVisibility(View.GONE);
 
         srl = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_layout);
-        srl.setEnabled(false);
+        srl.setEnabled(true);
 
         srlListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -188,50 +188,22 @@ public class NearMeListingsActivity extends NavigationActivity implements Locati
                         try {
 
                             BeaconService service = BeaconService.getInstance();
-                            Geocoder coder = new Geocoder(NearMeListingsActivity.this);
-                            List<Address> address = null;
 
                             for(final Listing i : result){
                                 if(service != null && service.containsListingId(i.getId())){
                                     newList.add(i);
                                 }else{
-                                    try {
-                                        address = coder.getFromLocationName(i.getLocation(),5);
+                                    if(location != null){
+                                        if(i.getLat() != null && i.getLon() != null){
+                                            double distance = meterDistanceBetweenPoints((float)location.getLatitude(),
+                                                    (float)location.getLongitude(),
+                                                    i.getLat().floatValue(),
+                                                    i.getLon().floatValue()
+                                            );
 
-                                        if(!address.isEmpty()) {
-                                            Address location = address.get(0);
-
-                                            double distance = meterDistanceBetweenPoints((float) location.getLatitude(),
-                                                    (float) location.getLongitude(),
-                                                    (float) NearMeListingsActivity.this.location.getLatitude(),
-                                                    (float) NearMeListingsActivity.this.location.getLongitude());
-
-                                            if (distance <= MAX_RADIUS)
+                                            if(distance <= MAX_RADIUS)
                                                 newList.add(i);
-                                        }else{
-                                            APIConsumer.GetLatLonAsyncTask task = APIConsumer.GetLatLon(i.getLocation(), new APIResponder<double[]>() {
-                                                @Override
-                                                public void success(double[] result) {
-                                                    double distance = meterDistanceBetweenPoints((float)location.getLatitude(),
-                                                            (float)location.getLongitude(),
-                                                            (float)result[0],
-                                                            (float)result[1]
-                                                    );
-
-                                                    if(distance <= MAX_RADIUS)
-                                                        newList.add(i);
-                                                }
-
-                                                @Override
-                                                public void error(String errorMessage) {
-
-                                                }
-                                            });
-                                            task.execute();
-                                            task.get();
                                         }
-                                    }catch(Exception e) {
-
                                     }
                                 }
                             }
@@ -356,7 +328,7 @@ public class NearMeListingsActivity extends NavigationActivity implements Locati
 //
 //        task.execute();
 
-        //updateListview();
+        updateListview();
     }
 
     private double meterDistanceBetweenPoints(float lat_a, float lng_a, float lat_b, float lng_b) {

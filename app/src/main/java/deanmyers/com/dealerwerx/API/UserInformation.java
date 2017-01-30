@@ -29,6 +29,7 @@ public class UserInformation implements Serializable{
     private String email;
     private String accessToken;
     private String phoneNumber;
+    private boolean isAgent;
 
     public int getId() {
         return id;
@@ -54,12 +55,15 @@ public class UserInformation implements Serializable{
         return phoneNumber;
     }
 
-    public UserInformation(int id, String firstName, String lastName, String email, String phoneNumber, String accessToken) {
+    public boolean getIsAgent() { return isAgent; }
+
+    public UserInformation(int id, String firstName, String lastName, String email, String phoneNumber, boolean isAgent, String accessToken) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.isAgent = isAgent;
         this.accessToken = accessToken;
     }
 
@@ -84,6 +88,7 @@ public class UserInformation implements Serializable{
         returnObject.put("lastName", lastName);
         returnObject.put("email", email);
         returnObject.put("phone_number", phoneNumber == null ? JSONObject.NULL : phoneNumber);
+
         returnObject.put("access-token", accessToken);
 
         return returnObject;
@@ -96,6 +101,7 @@ public class UserInformation implements Serializable{
                 obj.getString("lastName"),
                 obj.getString("email"),
                 obj.isNull("phone_number") ? null : obj.getString("phone_number"),
+                obj.getBoolean("isAgent"),
                 obj.getString("access-token")
         );
     }

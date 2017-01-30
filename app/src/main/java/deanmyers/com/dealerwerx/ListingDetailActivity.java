@@ -29,7 +29,13 @@ import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import deanmyers.com.dealerwerx.API.APIConsumer;
@@ -170,7 +176,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
         TextView mTransmission = (TextView)v.findViewById(R.id.transmission);
         TextView mDriveTrain = (TextView)v.findViewById(R.id.drivetrain);
         TextView mVin = (TextView)v.findViewById(R.id.vin);
-
+        TextView mAppointmentRequired = (TextView)v.findViewById(R.id.appointment_required);
+        TextView mCustomerNumber = (TextView)v.findViewById(R.id.customer_number);
+        TextView mStockNumber = (TextView)v.findViewById(R.id.stock_number);
 
         ImageView mSafeZone = (ImageView)v.findViewById(R.id.image_safezone_approval);
 
@@ -193,6 +201,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 mTransmission.setText(cExtra.getTransmission());
                 mDriveTrain.setText(cExtra.getDriveTrain());
                 mVin.setText(cExtra.getVin());
+
+                if(isUnset(cExtra.getTrim()))
+                    ((View)mTrim.getParent()).setVisibility(View.GONE);
 
                 if(isUnset(cExtra.getInteriorColor()))
                     ((View)mInteriorColor.getParent()).setVisibility(View.GONE);
@@ -230,6 +241,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 mFuelType.setText(mExtra.getFuelType());
                 mKilometers.setText(String.format(Locale.CANADA, "%d", mExtra.getKilometers()));
 
+                if(isUnset(mExtra.getTrim()))
+                    ((View)mTrim.getParent()).setVisibility(View.GONE);
+
                 if(isUnset(mExtra.getBodyStyle()))
                     ((View)mBodyStyle.getParent()).setVisibility(View.GONE);
 
@@ -248,6 +262,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 mFuelType.setText(bExtra.getFuelType());
                 mKilometers.setText(String.format(Locale.CANADA, "%d", bExtra.getKilometers()));
 
+                if(isUnset(bExtra.getTrim()))
+                    ((View)mTrim.getParent()).setVisibility(View.GONE);
+
                 if(isUnset(bExtra.getBodyStyle()))
                     ((View)mBodyStyle.getParent()).setVisibility(View.GONE);
 
@@ -258,19 +275,33 @@ public class ListingDetailActivity extends TitleCompatActivity {
             case Other:
         }
 
-        //mTitle.setText(vehicle.getTitle());
         mDescription.setText(vehicle.getDescription());
         mPostedBy.setText(listing.getPostedBy());
-        mAskingPrice.setText(String.format(Locale.CANADA, "$%.2f", listing.getAskingPrice()));
+        mAskingPrice.setText(listing.getAskingPrice() < 0 ? "Contact for Pricing" : String.format(Locale.CANADA, "$%.2f", listing.getAskingPrice()));
         mLocation.setText(listing.getLocation());
-        mDatePosted.setText(listing.getDatePosted().split(" ")[0]);
+        mDatePosted.setText(listing.getDatePosted());
 
+        if (isUnset(vehicle.getDescription())) {
+            ((View)mDescription.getParent()).setVisibility(View.GONE);
+        }
+
+        if (isUnset(listing.getCustomerNumber())) {
+            ((View)mCustomerNumber.getParent()).setVisibility(View.GONE);
+        }else{
+            mCustomerNumber.setText(String.format(Locale.CANADA, "%d", listing.getCustomerNumber()));
+        }
+
+        if (isUnset(vehicle.getStockNumber())) {
+            ((View)mStockNumber.getParent()).setVisibility(View.GONE);
+        }else{
+            mStockNumber.setText(vehicle.getStockNumber());
+        }
 
         switch(vehicle.getType()){
             case Car:
             case Motorcycle:
             case Boat:
-                setViewTitlePrimary(mMake.getText() + " " + mModel.getText() + " " + mTrim.getText());
+                setViewTitlePrimary(mMake.getText() + " " + mModel.getText());
                 setViewTitle(mYear.getText().toString());
                 break;
             case Equipment:
@@ -281,6 +312,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
         }
         if(listing.isSafeZone())
             mSafeZone.setImageResource(R.drawable.dealerwerx_safezone);
+        else{
+            mAppointmentRequired.setVisibility(View.GONE);
+        }
 
         if(media.length == 0) {
             if (!listing.isSafeZone())
@@ -323,9 +357,62 @@ public class ListingDetailActivity extends TitleCompatActivity {
                     final Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
                     ((TextView)alertDialog.findViewById(R.id.safezone_enabled)).setText(listing.isSafeZone() ? R.string.safezone_enabled : R.string.safezone_disabled);
+
+                    final View appointmentButtons = alertDialog.findViewById(R.id.safezone_only);
+
+                    if(!listing.isSafeZone())
+                        appointmentButtons.setVisibility(View.GONE);
+                    else{
+                        date1 = null;
+                        date2 = null;
+                        date3 = null;
+
+                        final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
+                        final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
+                        final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
+
+                        dateInput1.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getDate(1, dateInput1);
+                            }
+                        });
+
+                        dateInput2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getDate(2, dateInput2);
+                            }
+                        });
+
+                        dateInput3.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getDate(3, dateInput3);
+                            }
+                        });
+                    }
+
                     positiveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            String dateString1 = "";
+                            String dateString2 = "";
+                            String dateString3 = "";
+
+                            if(listing.isSafeZone() && (date1 != null || date2 != null || date3 != null)){
+                                SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
+                                if(date1 != null)
+                                    dateString1 = dt1.format(date1);
+                                if(date2 != null)
+                                    dateString2 = dt1.format(date2);
+                                if(date3 == null)
+                                    dateString3 = dt1.format(date3);
+                            }else if(listing.isSafeZone()){
+                                Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
                             positiveButton.setEnabled(false);
                             negativeButton.setEnabled(false);
 
@@ -333,6 +420,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                             APIConsumer.PurchaseListingAsyncTask task = APIConsumer.PurchaseListing(
                                     PreferencesManager.getUserInformation().getAccessToken(),
                                     listing.getId(),
+                                    dateString1,
+                                    dateString2,
+                                    dateString3,
                                     new APIResponder<Void>() {
                                         @Override
                                         public void success(Void result) {
@@ -390,17 +480,76 @@ public class ListingDetailActivity extends TitleCompatActivity {
                     final Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
                     ((TextView)alertDialog.findViewById(R.id.asking_price)).setText(String.format(Locale.CANADA, "$%.2f", listing.getAskingPrice()));
+
+                    if(listing.getAskingPrice() < 0){
+                        ((View)(alertDialog.findViewById(R.id.asking_price).getParent())).setVisibility(View.GONE);
+                    }
+
                     ((TextView)alertDialog.findViewById(R.id.safezone_enabled)).setText(listing.isSafeZone() ? R.string.safezone_enabled : R.string.safezone_disabled);
+
+                    final View appointmentButtons = alertDialog.findViewById(R.id.safezone_only);
+
+                    if(!listing.isSafeZone())
+                        appointmentButtons.setVisibility(View.GONE);
+                    else{
+                        date1 = null;
+                        date2 = null;
+                        date3 = null;
+
+                        final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
+                        final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
+                        final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
+
+                        dateInput1.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getDate(1, dateInput1);
+                            }
+                        });
+
+                        dateInput2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getDate(2, dateInput2);
+                            }
+                        });
+
+                        dateInput3.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getDate(3, dateInput3);
+                            }
+                        });
+                    }
+
                     positiveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            positiveButton.setEnabled(false);
-                            negativeButton.setEnabled(false);
 
                             EditText offerPrice = (EditText)alertDialog.findViewById(R.id.offerPrice);
 
                             boolean cancel = false;
                             double offer;
+
+                            String dateString1 = "";
+                            String dateString2 = "";
+                            String dateString3 = "";
+
+                            if(listing.isSafeZone() && (date1 != null || date2 != null || date3 != null)){
+                                SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
+                                if(date1 != null)
+                                    dateString1 = dt1.format(date1);
+                                if(date2 != null)
+                                    dateString2 = dt1.format(date2);
+                                if(date3 == null)
+                                    dateString3 = dt1.format(date3);
+                            }else if(listing.isSafeZone()){
+                                Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                            positiveButton.setEnabled(false);
+                            negativeButton.setEnabled(false);
 
                             if(TextUtils.isEmpty(offerPrice.getText())){
                                 cancel = true;
@@ -412,6 +561,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                             PreferencesManager.getUserInformation().getAccessToken(),
                                             listing.getId(),
                                             offer,
+                                            dateString1,
+                                            dateString2,
+                                            dateString3,
                                             new APIResponder<Void>() {
                                                 @Override
                                                 public void success(Void result) {
@@ -458,6 +610,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
     }
 
     private static boolean isUnset(String value){
+        if(value == null)
+            return true;
+
         String[] forbiddenValues = new String[]{
             "none",
             "N/A",
@@ -476,7 +631,47 @@ public class ListingDetailActivity extends TitleCompatActivity {
         return false;
     }
 
+    private static boolean isUnset(Long value){
+        if(value == null)
+            return true;
+
+        return false;
+    }
+
+    private Date date1, date2, date3;
     private final static int REQUEST_HOLD = 1;
+
+    private void getDate(final int index, final Button sender){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+
+        SingleDateAndTimePickerDialog.Builder builder = new SingleDateAndTimePickerDialog.Builder(this)
+                .minDateRange(cal.getTime());
+
+        cal.add(Calendar.DATE, 30);
+
+        builder.maxDateRange(cal.getTime());
+        builder.title("Appointment " + index);
+        builder.minutesStep(15);
+
+        builder.listener(new SingleDateAndTimePickerDialog.Listener() {
+            @Override
+            public void onDateSelected(Date date) {
+                if(index == 1){
+                    date1 = date;
+                }else if(index == 2){
+                    date2 = date;
+                }else{
+                    date3 = date;
+                }
+                SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
+                sender.setText(dt1.format(date));
+            }
+        });
+
+        builder.display();
+    }
+
     private void holdListing(){
         if(requestPhoneNumber(REQUEST_HOLD)){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -496,15 +691,72 @@ public class ListingDetailActivity extends TitleCompatActivity {
                     final Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
                     ((TextView)alertDialog.findViewById(R.id.safezone_enabled)).setText(listing.isSafeZone() ? R.string.safezone_enabled : R.string.safezone_disabled);
+
+                    final View appointmentButtons = alertDialog.findViewById(R.id.safezone_only);
+
+                    if(!listing.isSafeZone())
+                        appointmentButtons.setVisibility(View.GONE);
+                    else{
+                        date1 = null;
+                        date2 = null;
+                        date3 = null;
+
+                        final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
+                        final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
+                        final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
+
+                        dateInput1.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getDate(1, dateInput1);
+                            }
+                        });
+
+                        dateInput2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getDate(2, dateInput2);
+                            }
+                        });
+
+                        dateInput3.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getDate(3, dateInput3);
+                            }
+                        });
+                    }
+
+
                     positiveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            String dateString1 = "";
+                            String dateString2 = "";
+                            String dateString3 = "";
+
+                            if(listing.isSafeZone() && (date1 != null || date2 != null || date3 != null)){
+                                SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
+                                if(date1 != null)
+                                    dateString1 = dt1.format(date1);
+                                if(date2 != null)
+                                    dateString2 = dt1.format(date2);
+                                if(date3 == null)
+                                    dateString3 = dt1.format(date3);
+                            }else if(listing.isSafeZone()){
+                                Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
                             positiveButton.setEnabled(false);
                             negativeButton.setEnabled(false);
 
                             APIConsumer.HoldListingAsyncTask task = APIConsumer.HoldListing(
                                     PreferencesManager.getUserInformation().getAccessToken(),
                                     listing.getId(),
+                                    dateString1,
+                                    dateString2,
+                                    dateString3,
                                     new APIResponder<Void>() {
                                         @Override
                                         public void success(Void result) {
@@ -617,60 +869,72 @@ public class ListingDetailActivity extends TitleCompatActivity {
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageView.setBackgroundColor(2139402);
-            APIConsumer.DownloadImageAsyncTask task = APIConsumer.DownloadImage(
-                    media[position].getThumbnailUrl(),
-                    new APIResponder<Bitmap>() {
+
+            Picasso.with(ListingDetailActivity.this).load(media[position].getThumbnailUrl()).into(imageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void success(Bitmap result) {
-                            imageView.setImageBitmap(result);
-                            imageView.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            final Dialog nagDialog = new Dialog(ListingDetailActivity.this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                            nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            nagDialog.setContentView(R.layout.preview_image);
+                            Button btnClose = (Button)nagDialog.findViewById(R.id.action_close);
+                            Button btnDelete = (Button)nagDialog.findViewById(R.id.action_delete);
+                            final ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.preview);
+
+                            FrameLayout.LayoutParams ivParams = (FrameLayout.LayoutParams)ivPreview.getLayoutParams();
+                            ivParams.setMargins(0,0,0,0);
+                            ivPreview.setLayoutParams(ivParams);
+
+                            btnDelete.setVisibility(View.INVISIBLE);
+
+                            Picasso.with(ListingDetailActivity.this).load(media[position].getImageUrl()).into(ivPreview);
+//                                    APIConsumer.DownloadImageAsyncTask task1 = APIConsumer.DownloadImage(media[position].getImageUrl(), new APIResponder<Bitmap>() {
+//                                                @Override
+//                                                public void success(Bitmap result2) {
+//                                                    ivPreview.setImageBitmap(result2);
+//                                                }
+//
+//                                                @Override
+//                                                public void error(String errorMessage) {
+//
+//                                                }
+//                                            });
+//                                    task1.execute();
+
+                            btnClose.setOnClickListener(new Button.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
-                                    final Dialog nagDialog = new Dialog(ListingDetailActivity.this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-                                    nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                    nagDialog.setContentView(R.layout.preview_image);
-                                    Button btnClose = (Button)nagDialog.findViewById(R.id.action_close);
-                                    Button btnDelete = (Button)nagDialog.findViewById(R.id.action_delete);
-                                    final ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.preview);
-
-                                    FrameLayout.LayoutParams ivParams = (FrameLayout.LayoutParams)ivPreview.getLayoutParams();
-                                    ivParams.setMargins(0,0,0,0);
-                                    ivPreview.setLayoutParams(ivParams);
-
-                                    btnDelete.setVisibility(View.INVISIBLE);
-
-                                    APIConsumer.DownloadImageAsyncTask task1 = APIConsumer.DownloadImage(media[position].getImageUrl(), new APIResponder<Bitmap>() {
-                                                @Override
-                                                public void success(Bitmap result2) {
-                                                    ivPreview.setImageBitmap(result2);
-                                                }
-
-                                                @Override
-                                                public void error(String errorMessage) {
-
-                                                }
-                                            });
-                                    task1.execute();
-
-                                    btnClose.setOnClickListener(new Button.OnClickListener() {
-                                        @Override
-                                        public void onClick(View arg0) {
-                                            nagDialog.dismiss();
-                                        }
-                                    });
-
-                                    nagDialog.show();
+                                public void onClick(View arg0) {
+                                    nagDialog.dismiss();
                                 }
                             });
-                        }
 
-                        @Override
-                        public void error(String errorMessage) {
-
+                            nagDialog.show();
                         }
-                    }
-            );
-            task.execute();
+                    });
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+//            APIConsumer.DownloadImageAsyncTask task = APIConsumer.DownloadImage(
+//                    media[position].getThumbnailUrl(),
+//                    new APIResponder<Bitmap>() {
+//                        @Override
+//                        public void success(Bitmap result) {
+//
+//                        }
+//
+//                        @Override
+//                        public void error(String errorMessage) {
+//
+//                        }
+//                    }
+//            );
+//            task.execute();
             llayout.addView(imageView);
             container.addView(llayout);
             return llayout;

@@ -21,7 +21,16 @@
             android:layout_marginEnd="5dp"
             />
     </FrameLayout>
-
+    <TextView
+        android:layout_height="30dp"
+        android:layout_width="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:background="@color/loginBackground"
+        android:textSize="18sp"
+        android:text="Appointments are Required"
+        android:textColor="@color/loginAccent"
+        android:id="@+id/appointment_required"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -95,6 +104,46 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:id="@+id/seller"
+                android:text="@string/placeholder"
+                android:textSize="18sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer Number"
+                android:textSize="18sp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="3dp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:id="@+id/customer_number"
+                android:text="@string/placeholder"
+                android:textSize="18sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stock Number"
+                android:textSize="18sp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="3dp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:id="@+id/stock_number"
                 android:text="@string/placeholder"
                 android:textSize="18sp"/>
         </LinearLayout>

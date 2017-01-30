@@ -4,9 +4,12 @@ package deanmyers.com.dealerwerx.API;
  * Created by mac3 on 2016-11-11.
  */
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,6 +48,7 @@ public final class APIConsumer {
     private static final String ADDBEACON_SUFFIX = "beacons/add";
     private static final String FROMBEACON_SUFFIX = "listings/frombeacon";
     private static final String LISTINGSDELETE_SUFFIX = "delete";
+    private static final String LISTINGSRELIST_SUFFIX = "relist";
     private static final String SCAVENGERLISTINGS_SUFFIX = "scavengers";
     private static final String VINDECODE_SUFFIX = "vehicles/fromvin";
     private static final String REGISTER_SUFFIX = "register";
@@ -57,6 +61,7 @@ public final class APIConsumer {
     private static final String LOGIN_SUFFIX = "login";
     private static final String VALIDATE_SUFFIX = "validate";
     private static final String IMAGEUPLOAD_SUFFIX = "listings/images";
+    private static final String IMAGEDELETE_SUFFIX = "images";
     private static final String LISTINGUPDATE_SUFFIX = "update";
     private static final String VIDEOS_SUFFIX = "videos";
     private static final String GEOCODE_URLFORMAT = "http://maps.google.com/maps/api/geocode/json?address=%s&sensor=false";
@@ -67,8 +72,8 @@ public final class APIConsumer {
         return new LoginAsyncTask(email, password, responder);
     }
 
-    public static RegisterAsyncTask Register(String firstName, String lastName, String email, String password, APIResponder<UserInformation> responder){
-        return new RegisterAsyncTask(firstName, lastName, email, password, responder);
+    public static RegisterAsyncTask Register(String firstName, String lastName, String email, String password, String countryCode, boolean isAgent, APIResponder<UserInformation> responder){
+        return new RegisterAsyncTask(firstName, lastName, email, password, countryCode, isAgent, responder);
     }
 
     public static CreateListingAsyncTask CreateListing(String accessToken, Listing listing, APIResponder<Listing> responder){
@@ -81,6 +86,14 @@ public final class APIConsumer {
 
     public static DeleteListingAsyncTask DeleteListing(String accessToken, Listing listing, APIResponder<Void> responder){
         return new DeleteListingAsyncTask(accessToken, listing, responder);
+    }
+
+    public static DeleteImageAsyncTask DeleteImage(String accessToken, int listingId, int imageId,  APIResponder<Listing> responder){
+        return new DeleteImageAsyncTask(accessToken, listingId, imageId, responder);
+    }
+
+    public static RelistListingAsyncTask RelistListing(String accessToken, Listing listing, APIResponder<Void> responder){
+        return new RelistListingAsyncTask(accessToken, listing, responder);
     }
 
     public static CreateScavengerListingAsyncTask CreateScavengerListing(String accessToken, Listing listing, APIResponder<Listing> responder){
@@ -99,15 +112,15 @@ public final class APIConsumer {
         return new GetScavengerListingsAsyncTask(accessToken, responder);
     }
 
-    public static DownloadImageAsyncTask DownloadImage(String imageUrl, APIResponder<Bitmap> responder){
-        return new DownloadImageAsyncTask(imageUrl, responder);
+    public static DownloadImageAsyncTask DownloadImage(Context ctx, String imageUrl, APIResponder<Bitmap> responder){
+        return new DownloadImageAsyncTask(ctx, imageUrl, responder);
     }
 
     public static VinDecodeAsyncTask VinDecode(String accessToken, String vin, APIResponder<VinDecodeResult> responder){
         return new VinDecodeAsyncTask(accessToken, vin, responder);
     }
 
-    public static UploadImageAsyncTask UploadImage(String accessToken, int listingId, Bitmap image, APIResponder<Void> responder){
+    public static UploadImageAsyncTask UploadImage(String accessToken, int listingId, Bitmap image, APIResponder<Listing> responder){
         return new UploadImageAsyncTask(accessToken, listingId, image, responder);
     }
 
@@ -123,20 +136,20 @@ public final class APIConsumer {
         return new GetVideosAsyncTask(responder);
     }
 
-    public static GetLatLonAsyncTask GetLatLon(String address, APIResponder<double[]> responder){
+    public static GetLatLonAsyncTask GetLatLonDeprecated(String address, APIResponder<double[]> responder){
         return new GetLatLonAsyncTask(address, responder);
     }
 
-    public static HoldListingAsyncTask HoldListing(String accessToken, int listingId, APIResponder<Void> responder){
-        return new HoldListingAsyncTask(accessToken, listingId, responder);
+    public static HoldListingAsyncTask HoldListing(String accessToken, int listingId, String date1, String date2, String date3, APIResponder<Void> responder){
+        return new HoldListingAsyncTask(accessToken, listingId, date1, date2, date3, responder);
     }
 
-    public static PurchaseListingAsyncTask PurchaseListing(String accessToken, int listingId, APIResponder<Void> responder){
-        return new PurchaseListingAsyncTask(accessToken, listingId, responder);
+    public static PurchaseListingAsyncTask PurchaseListing(String accessToken, int listingId, String date1, String date2, String date3, APIResponder<Void> responder){
+        return new PurchaseListingAsyncTask(accessToken, listingId, date1, date2, date3, responder);
     }
 
-    public static OfferOnListingAsyncTask OfferOnListing(String accessToken, int listingId, double offerPrice, APIResponder<Void> responder){
-        return new OfferOnListingAsyncTask(accessToken, listingId, offerPrice, responder);
+    public static OfferOnListingAsyncTask OfferOnListing(String accessToken, int listingId, double offerPrice, String date1, String date2, String date3, APIResponder<Void> responder){
+        return new OfferOnListingAsyncTask(accessToken, listingId, offerPrice, date1, date2, date3, responder);
     }
 
     public static GetListingFromBeaconAsyncTask GetListingFromBeacon(String accessToken, String uuid, int major, int minor, APIResponder<Listing> responder){
@@ -159,10 +172,10 @@ public final class APIConsumer {
         return new AddBeaconAsyncTask(accessToken, code, responder);
     }
 
-    private static class APITaskResult<T>{
-        boolean success = false;
-        T result = null;
-        String errorMessage = "An unknown error has occurred";
+    public static class APITaskResult<T>{
+        public boolean success = false;
+        public T result = null;
+        public String errorMessage = "An unknown error has occurred";
     }
 
     public static abstract class APIAsyncTask<T> extends AsyncTask<Void, Void, APITaskResult<T>>{
@@ -276,12 +289,12 @@ public final class APIConsumer {
         }
     }
 
-    public static final class UploadImageAsyncTask extends APIAsyncTask<Void>{
+    public static final class UploadImageAsyncTask extends APIAsyncTask<Listing>{
         private String accessToken;
         private Bitmap image;
         private int listingId;
 
-        UploadImageAsyncTask(String accessToken, int listingId, Bitmap image, APIResponder<Void> responder) {
+        UploadImageAsyncTask(String accessToken, int listingId, Bitmap image, APIResponder<Listing> responder) {
             super(responder);
             this.accessToken = accessToken;
             this.image = image;
@@ -289,8 +302,8 @@ public final class APIConsumer {
         }
 
         @Override
-        protected APITaskResult<Void> doInBackground(Void... params) {
-            APITaskResult<Void> returnResult = new APITaskResult<Void>();
+        protected APITaskResult<Listing> doInBackground(Void... params) {
+            APITaskResult<Listing> returnResult = new APITaskResult<Listing>();
 
             String urlString = String.format("%s%s", API_ENDPOINT, IMAGEUPLOAD_SUFFIX);
 
@@ -316,6 +329,20 @@ public final class APIConsumer {
                 if(responseCode != HttpURLConnection.HTTP_OK)
                     throw new Exception("Invalid request");
 
+                returnResult.success = false;
+
+                InputStream is = conn.getInputStream();
+                String data = readResponse(is);
+                is.close();
+
+                JSONObject response = new JSONObject(data);
+
+                if(response.has("errors") || response.has("error"))
+                    throw new Exception(response.has("message") ? response.getString("message") : "An unknown error occurred");
+
+                Listing result = Listing.fromJsonObject(response.getJSONObject("listing"));
+
+                returnResult.result = result;
                 returnResult.success = true;
 
             } catch (MalformedURLException e) {
@@ -343,7 +370,7 @@ public final class APIConsumer {
         protected APITaskResult<Listing[]> doInBackground(Void... params) {
             APITaskResult<Listing[]> returnResult = new APITaskResult<Listing[]>();
 
-            String urlString = String.format("%s%s?per-page=1000&sort=-datePosted", API_ENDPOINT, LISTINGS_SUFFIX);
+            String urlString = String.format("%s%s?per-page=10000&sort=-datePosted", API_ENDPOINT, LISTINGS_SUFFIX);
 
             try {
                 URL url = new URL(urlString);
@@ -392,7 +419,7 @@ public final class APIConsumer {
         protected APITaskResult<Listing[]> doInBackground(Void... params) {
             APITaskResult<Listing[]> returnResult = new APITaskResult<Listing[]>();
 
-            String urlString = String.format("%s%s?per-page=1000&sort=-datePosted", API_ENDPOINT, SCAVENGERLISTINGS_SUFFIX);
+            String urlString = String.format("%s%s?per-page=10000&sort=-datePosted", API_ENDPOINT, SCAVENGERLISTINGS_SUFFIX);
 
             try {
                 URL url = new URL(urlString);
@@ -441,7 +468,7 @@ public final class APIConsumer {
         protected APITaskResult<Listing[]> doInBackground(Void... params) {
             APITaskResult<Listing[]> returnResult = new APITaskResult<Listing[]>();
 
-            String urlString = String.format("%s%s?per-page=1000", API_ENDPOINT, MYLISTINGS_SUFFIX);
+            String urlString = String.format("%s%s?per-page=10000", API_ENDPOINT, MYLISTINGS_SUFFIX);
 
             try {
                 URL url = new URL(urlString);
@@ -490,7 +517,7 @@ public final class APIConsumer {
         protected APITaskResult<Beacon[]> doInBackground(Void... params) {
             APITaskResult<Beacon[]> returnResult = new APITaskResult<Beacon[]>();
 
-            String urlString = String.format("%s%s?per-page=1000", API_ENDPOINT, MYBEACONS_SUFFIX);
+            String urlString = String.format("%s%s?per-page=10000", API_ENDPOINT, MYBEACONS_SUFFIX);
 
             try {
                 URL url = new URL(urlString);
@@ -719,6 +746,111 @@ public final class APIConsumer {
             APITaskResult<Void> returnResult = new APITaskResult<Void>();
 
             String urlString = String.format(Locale.CANADA, "%s%s/%d/%s", API_ENDPOINT, LISTINGS_SUFFIX, listing.getId(), LISTINGSDELETE_SUFFIX);
+
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                setBearer(accessToken, conn);
+
+                int responseCode = conn.getResponseCode();
+
+                if(responseCode != HttpURLConnection.HTTP_OK)
+                    throw new Exception("Invalid request");
+
+
+                InputStream is = conn.getInputStream();
+                String data = readResponse(is);
+                is.close();
+
+                JSONObject response = new JSONObject(data);
+
+                if(response.has("error"))
+                    throw new Exception(response.has("message") ? response.getString("message") : response.getString("error"));
+
+                returnResult.success = true;
+
+            } catch (MalformedURLException e) {
+                returnResult.errorMessage = "The URL was malformed.";
+            } catch (IOException e) {
+                returnResult.errorMessage = "Unable to make request.";
+            } catch(Exception e){
+                returnResult.errorMessage = e.getMessage();
+            }
+            finally {
+                return returnResult;
+            }
+        }
+    }
+
+    public static final class DeleteImageAsyncTask extends APIAsyncTask<Listing>{
+        int listingId;
+        int imageId;
+        String accessToken;
+
+        DeleteImageAsyncTask(String accessToken, int listingId, int imageId, APIResponder<Listing> responder) {
+            super(responder);
+            this.listingId = listingId;
+            this.imageId = imageId;
+            this.accessToken = accessToken;
+        }
+
+        @Override
+        protected APITaskResult<Listing> doInBackground(Void... params) {
+            APITaskResult<Listing> returnResult = new APITaskResult<Listing>();
+
+            String urlString = String.format(Locale.CANADA, "%s%s/%d/%s/%d/%s", API_ENDPOINT, LISTINGS_SUFFIX, listingId, IMAGEDELETE_SUFFIX, imageId, LISTINGSDELETE_SUFFIX);
+
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                setBearer(accessToken, conn);
+
+                int responseCode = conn.getResponseCode();
+
+                if(responseCode != HttpURLConnection.HTTP_OK)
+                    throw new Exception("Invalid request");
+
+
+                InputStream is = conn.getInputStream();
+                String data = readResponse(is);
+                is.close();
+
+                JSONObject response = new JSONObject(data);
+
+                if(response.has("result") && response.getString("result").equals("error"))
+                    throw new Exception(response.has("message") ? response.getString("message") : response.getString("error"));
+
+                returnResult.result = Listing.fromJsonObject(response.getJSONObject("listing"));
+                returnResult.success = true;
+
+            } catch (MalformedURLException e) {
+                returnResult.errorMessage = "The URL was malformed.";
+            } catch (IOException e) {
+                returnResult.errorMessage = "Unable to make request.";
+            } catch(Exception e){
+                returnResult.errorMessage = e.getMessage();
+            }
+            finally {
+                return returnResult;
+            }
+        }
+    }
+
+    public static final class RelistListingAsyncTask extends APIAsyncTask<Void>{
+        Listing listing;
+        String accessToken;
+
+        RelistListingAsyncTask(String accessToken, Listing listing, APIResponder<Void> responder) {
+            super(responder);
+            this.listing = listing;
+            this.accessToken = accessToken;
+        }
+
+        @Override
+        protected APITaskResult<Void> doInBackground(Void... params) {
+            APITaskResult<Void> returnResult = new APITaskResult<Void>();
+
+            String urlString = String.format(Locale.CANADA, "%s%s/%d/%s", API_ENDPOINT, LISTINGS_SUFFIX, listing.getId(), LISTINGSRELIST_SUFFIX);
 
             try {
                 URL url = new URL(urlString);
@@ -992,37 +1124,40 @@ public final class APIConsumer {
 
     public static final class DownloadImageAsyncTask extends APIAsyncTask<Bitmap>{
         private String imageUrl;
+        private Context ctx;
 
-        DownloadImageAsyncTask(String imageUrl, APIResponder<Bitmap> responder) {
+        DownloadImageAsyncTask(Context ctx, String imageUrl, APIResponder<Bitmap> responder) {
             super(responder);
             this.imageUrl = imageUrl;
+            this.ctx = ctx;
         }
 
         @Override
         protected APITaskResult<Bitmap> doInBackground(Void... params) {
             APITaskResult<Bitmap> returnResult = new APITaskResult<Bitmap>();
-            returnResult.result = ImageCacheManager.getImage(imageUrl);
-
-            if(returnResult.result != null){
-                returnResult.success = true;
-                return returnResult;
-            }
+//            returnResult.result = ImageCacheManager.getImage(imageUrl);
+//
+//            if(returnResult.result != null){
+//                returnResult.success = true;
+//                return returnResult;
+//            }
 
             try {
-                URL url = new URL(imageUrl);
-                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-
-
-                int responseCode = conn.getResponseCode();
-
-                if(responseCode != HttpURLConnection.HTTP_OK)
-                    throw new Exception("Invalid request");
-
-
-                InputStream is = conn.getInputStream();
-                returnResult.result = BitmapFactory.decodeStream(is);
-                ImageCacheManager.storeImage(imageUrl, returnResult.result);
-                is.close();
+                returnResult.result = Picasso.with(ctx).load(imageUrl).get();
+//                URL url = new URL(imageUrl);
+//                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+//
+//
+//                int responseCode = conn.getResponseCode();
+//
+//                if(responseCode != HttpURLConnection.HTTP_OK)
+//                    throw new Exception("Invalid request");
+//
+//
+//                InputStream is = conn.getInputStream();
+//                returnResult.result = BitmapFactory.decodeStream(is);
+//                ImageCacheManager.storeImage(imageUrl, returnResult.result);
+//                is.close();
 
                 returnResult.success = true;
 
@@ -1044,13 +1179,17 @@ public final class APIConsumer {
         private String lastName;
         private String email;
         private String password;
+        private String countryCode;
+        private boolean isAgent;
 
-        RegisterAsyncTask(String firstName, String lastName, String email, String password, APIResponder<UserInformation> responder) {
+        RegisterAsyncTask(String firstName, String lastName, String email, String password, String countryCode, boolean isAgent, APIResponder<UserInformation> responder) {
             super(responder);
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
             this.password = password;
+            this.countryCode = countryCode;
+            this.isAgent = isAgent;
         }
 
         @Override
@@ -1070,7 +1209,8 @@ public final class APIConsumer {
                 credentials.put("lastName", this.lastName);
                 credentials.put("email", this.email);
                 credentials.put("password", this.password);
-
+                credentials.put("country_code", this.countryCode);
+                credentials.put("isAgent", this.isAgent);
 
                 OutputStream os = conn.getOutputStream();
                 postData(os, credentials.toString());
@@ -1275,11 +1415,15 @@ public final class APIConsumer {
     public static final class HoldListingAsyncTask extends APIAsyncTask<Void>{
         private String accessToken;
         private int listingId;
+        private String date1, date2, date3;
 
-        HoldListingAsyncTask(String accessToken, int listingId, APIResponder<Void> responder) {
+        HoldListingAsyncTask(String accessToken, int listingId, String date1, String date2, String date3, APIResponder<Void> responder) {
             super(responder);
             this.accessToken = accessToken;
             this.listingId = listingId;
+            this.date1 = date1;
+            this.date2 = date2;
+            this.date3 = date3;
         }
 
         @Override
@@ -1292,6 +1436,16 @@ public final class APIConsumer {
                 URL url = new URL(urlString);
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
                 setBearer(accessToken, conn);
+                configurePost(conn);
+
+                JSONObject postData = new JSONObject();
+                postData.put("date1", date1);
+                postData.put("date2", date2);
+                postData.put("date3", date3);
+
+                OutputStream os = conn.getOutputStream();
+                postData(os, postData.toString());
+                os.close();
 
                 int responseCode = conn.getResponseCode();
 
@@ -1326,11 +1480,15 @@ public final class APIConsumer {
     public static final class PurchaseListingAsyncTask extends APIAsyncTask<Void>{
         private String accessToken;
         private int listingId;
+        private String date1, date2, date3;
 
-        PurchaseListingAsyncTask(String accessToken, int listingId, APIResponder<Void> responder) {
+        PurchaseListingAsyncTask(String accessToken, int listingId, String date1, String date2, String date3, APIResponder<Void> responder) {
             super(responder);
             this.accessToken = accessToken;
             this.listingId = listingId;
+            this.date1 = date1;
+            this.date2 = date2;
+            this.date3 = date3;
         }
 
         @Override
@@ -1343,6 +1501,16 @@ public final class APIConsumer {
                 URL url = new URL(urlString);
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
                 setBearer(accessToken, conn);
+                configurePost(conn);
+
+                JSONObject postData = new JSONObject();
+                postData.put("date1", date1);
+                postData.put("date2", date2);
+                postData.put("date3", date3);
+
+                OutputStream os = conn.getOutputStream();
+                postData(os, postData.toString());
+                os.close();
 
                 int responseCode = conn.getResponseCode();
 
@@ -1378,12 +1546,16 @@ public final class APIConsumer {
         private String accessToken;
         private int listingId;
         private double offerPrice;
+        private String date1, date2, date3;
 
-        OfferOnListingAsyncTask(String accessToken, int listingId, double offerPrice, APIResponder<Void> responder) {
+        OfferOnListingAsyncTask(String accessToken, int listingId, double offerPrice, String date1, String date2, String date3, APIResponder<Void> responder) {
             super(responder);
             this.accessToken = accessToken;
             this.listingId = listingId;
             this.offerPrice = offerPrice;
+            this.date1 = date1;
+            this.date2 = date2;
+            this.date3 = date3;
         }
 
         @Override
@@ -1401,6 +1573,9 @@ public final class APIConsumer {
 
                 JSONObject postData = new JSONObject();
                 postData.put("offer", offerPrice);
+                postData.put("date1", date1);
+                postData.put("date2", date2);
+                postData.put("date3", date3);
 
                 OutputStream os = conn.getOutputStream();
                 postData(os, postData.toString());

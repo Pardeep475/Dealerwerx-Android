@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import java.util.Locale;
 
 import deanmyers.com.dealerwerx.API.APIConsumer;
@@ -192,60 +195,72 @@ public class ScavengerListingDetailActivity extends TitleCompatActivity {
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageView.setBackgroundColor(2139402);
-            APIConsumer.DownloadImageAsyncTask task = APIConsumer.DownloadImage(
-                    media[position].getThumbnailUrl(),
-                    new APIResponder<Bitmap>() {
+
+            Picasso.with(ScavengerListingDetailActivity.this).load(media[position].getThumbnailUrl()).into(imageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void success(Bitmap result) {
-                            imageView.setImageBitmap(result);
-                            imageView.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            final Dialog nagDialog = new Dialog(ScavengerListingDetailActivity.this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                            nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            nagDialog.setContentView(R.layout.preview_image);
+                            Button btnClose = (Button)nagDialog.findViewById(R.id.action_close);
+                            Button btnDelete = (Button)nagDialog.findViewById(R.id.action_delete);
+                            final ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.preview);
+
+                            FrameLayout.LayoutParams ivParams = (FrameLayout.LayoutParams)ivPreview.getLayoutParams();
+                            ivParams.setMargins(0,0,0,0);
+                            ivPreview.setLayoutParams(ivParams);
+
+                            btnDelete.setVisibility(View.INVISIBLE);
+
+                            Picasso.with(ScavengerListingDetailActivity.this).load(media[position].getImageUrl()).into(ivPreview);
+//                                    APIConsumer.DownloadImageAsyncTask task1 = APIConsumer.DownloadImage(media[position].getImageUrl(), new APIResponder<Bitmap>() {
+//                                                @Override
+//                                                public void success(Bitmap result2) {
+//                                                    ivPreview.setImageBitmap(result2);
+//                                                }
+//
+//                                                @Override
+//                                                public void error(String errorMessage) {
+//
+//                                                }
+//                                            });
+//                                    task1.execute();
+
+                            btnClose.setOnClickListener(new Button.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
-                                    final Dialog nagDialog = new Dialog(ScavengerListingDetailActivity.this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-                                    nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                    nagDialog.setContentView(R.layout.preview_image);
-                                    Button btnClose = (Button)nagDialog.findViewById(R.id.action_close);
-                                    Button btnDelete = (Button)nagDialog.findViewById(R.id.action_delete);
-                                    final ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.preview);
-
-                                    FrameLayout.LayoutParams ivParams = (FrameLayout.LayoutParams)ivPreview.getLayoutParams();
-                                    ivParams.setMargins(0,0,0,0);
-                                    ivPreview.setLayoutParams(ivParams);
-
-                                    btnDelete.setVisibility(View.INVISIBLE);
-
-                                    APIConsumer.DownloadImageAsyncTask task1 = APIConsumer.DownloadImage(media[position].getImageUrl(), new APIResponder<Bitmap>() {
-                                                @Override
-                                                public void success(Bitmap result2) {
-                                                    ivPreview.setImageBitmap(result2);
-                                                }
-
-                                                @Override
-                                                public void error(String errorMessage) {
-
-                                                }
-                                            });
-                                    task1.execute();
-
-                                    btnClose.setOnClickListener(new Button.OnClickListener() {
-                                        @Override
-                                        public void onClick(View arg0) {
-                                            nagDialog.dismiss();
-                                        }
-                                    });
-
-                                    nagDialog.show();
+                                public void onClick(View arg0) {
+                                    nagDialog.dismiss();
                                 }
                             });
-                        }
 
-                        @Override
-                        public void error(String errorMessage) {
-
+                            nagDialog.show();
                         }
-                    }
-            );
-            task.execute();
+                    });
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+//            APIConsumer.DownloadImageAsyncTask task = APIConsumer.DownloadImage(
+//                    media[position].getThumbnailUrl(),
+//                    new APIResponder<Bitmap>() {
+//                        @Override
+//                        public void success(Bitmap result) {
+//
+//                        }
+//
+//                        @Override
+//                        public void error(String errorMessage) {
+//
+//                        }
+//                    }
+//            );
+//            task.execute();
             llayout.addView(imageView);
             container.addView(llayout);
             return llayout;

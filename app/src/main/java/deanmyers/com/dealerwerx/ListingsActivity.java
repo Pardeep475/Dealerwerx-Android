@@ -1,13 +1,21 @@
 package deanmyers.com.dealerwerx;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatImageButton;
@@ -48,7 +56,7 @@ import deanmyers.com.dealerwerx.Adapters.ListingsAdapter;
 import deanmyers.com.dealerwerx.Adapters.MotorcycleListingsAdapter;
 import deanmyers.com.dealerwerx.Adapters.OtherListingsAdapter;
 
-public class ListingsActivity extends NavigationActivity {
+public class ListingsActivity extends NavigationActivity implements LocationListener{
 
     private Constructor<?> classConstructor;
     private SwipeRefreshLayout srl;
@@ -61,6 +69,16 @@ public class ListingsActivity extends NavigationActivity {
     private LinearLayout boatListings;
     private LinearLayout equipmentListings;
     private LinearLayout otherListings;
+
+    private LocationManager mLocationManager;
+
+    final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 1;
+    final int MY_PERMISSION_ACCESS_FINE_LOCATION = 2;
+
+    final float kmRange = 50.0f;
+
+    private Location location = null;
+    private boolean firstTime = true;
 
     protected void onCreate(Bundle savedInstanceState) {
         setClassConstructor(ListingsAdapter.class);
@@ -90,8 +108,29 @@ public class ListingsActivity extends NavigationActivity {
                     public void success(Listing[] result) {
                         ListView listView = (ListView)findViewById(R.id.listings_list);
 
+                        ArrayList<Listing> newResultsList = new ArrayList<Listing>();
+                        Listing[] newResults;
+
+                        if(location != null){
+                            for(int i = 0; i < result.length; i++){
+                                Listing listing = result[i];
+                                if(listing.getLat() == null || listing.getLon() == null)
+                                    continue;
+
+                                double distance = meterDistanceBetweenPoints(listing.getLat().floatValue(), listing.getLon().floatValue(), (float)location.getLatitude(), (float)location.getLongitude());
+
+                                if(distance > kmRange * 1000)
+                                    continue;
+                                else
+                                    newResultsList.add(listing);
+                            }
+                            newResults = newResultsList.toArray(new Listing[]{});
+                        }
+                        else{
+                            newResults = result;
+                        }
                         try {
-                            listView.setAdapter((ListingsAdapter)classConstructor.newInstance(ListingsActivity.this, 0, Arrays.asList(result)));
+                            listView.setAdapter((ListingsAdapter)classConstructor.newInstance(ListingsActivity.this, 0, Arrays.asList(newResults)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -191,6 +230,54 @@ public class ListingsActivity extends NavigationActivity {
             }
         });
 
+        try {
+            mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+
+            // Get the best provider between gps, network and passive
+            Criteria criteria = new Criteria();
+            String mProviderName = mLocationManager.getBestProvider(criteria, true);
+
+            // API 23: we have to check if ACCESS_FINE_LOCATION and/or ACCESS_COARSE_LOCATION permission are granted
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                // No one provider activated: prompt GPS
+                if (mProviderName == null || mProviderName.equals("")) {
+                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+
+                // At least one provider activated. Get the coordinates
+                switch (mProviderName) {
+                    case "passive":
+                    case "network":
+                    case "gps":
+                        mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+                        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+                }
+
+                // One or both permissions are denied.
+            } else {
+
+                // The ACCESS_COARSE_LOCATION is denied, then I request it and manage the result in
+                // onRequestPermissionsResult() using the constant MY_PERMISSION_ACCESS_FINE_LOCATION
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            MY_PERMISSION_ACCESS_COARSE_LOCATION);
+                }
+                // The ACCESS_FINE_LOCATION is denied, then I request it and manage the result in
+                // onRequestPermissionsResult() using the constant MY_PERMISSION_ACCESS_FINE_LOCATION
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                            MY_PERMISSION_ACCESS_FINE_LOCATION);
+                }
+
+            }
+        } catch (Exception e) {
+            updateListview();
+        }
 //        APIConsumer.GetListingsAsyncTask task = APIConsumer.GetListings(PreferencesManager.getUserInformation().getAccessToken(), new APIResponder<Listing[]>() {
 //            @Override
 //            public void success(Listing[] result) {
@@ -204,8 +291,42 @@ public class ListingsActivity extends NavigationActivity {
 //        });
 //
 //        task.execute();
+    }
 
-        updateListview();
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSION_ACCESS_COARSE_LOCATION:
+            case MY_PERMISSION_ACCESS_FINE_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    updateListview();
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.location = location;
+        if(firstTime) {
+            firstTime = false;
+            updateListview();
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
     }
 
     private boolean setClassConstructor(Class<?> className) {
@@ -230,6 +351,22 @@ public class ListingsActivity extends NavigationActivity {
             imageView.setColorFilter(resolvedColor);
             textView.setTextColor(resolvedColor);
         }
+    }
+
+    private double meterDistanceBetweenPoints(float lat_a, float lng_a, float lat_b, float lng_b) {
+        float pk = (float) (180.f/Math.PI);
+
+        float a1 = lat_a / pk;
+        float a2 = lng_a / pk;
+        float b1 = lat_b / pk;
+        float b2 = lng_b / pk;
+
+        float t1 = (float)(Math.cos(a1)*Math.cos(a2)*Math.cos(b1)*Math.cos(b2));
+        float t2 = (float)(Math.cos(a1)*Math.sin(a2)*Math.cos(b1)*Math.sin(b2));
+        float t3 = (float)(Math.sin(a1)*Math.sin(b1));
+        double tt = (Math.acos(t1 + t2 + t3));
+
+        return 6366000*tt;
     }
 
     private void updateListview(){

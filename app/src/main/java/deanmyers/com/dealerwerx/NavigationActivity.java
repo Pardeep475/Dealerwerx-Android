@@ -190,6 +190,12 @@ public class NavigationActivity extends TitleCompatActivity
                 startActivity(intent);
                 finish();
             }
+            else if(id == R.id.nav_checkin){
+                Intent intent = new Intent(this, CheckinActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
 
         }
 

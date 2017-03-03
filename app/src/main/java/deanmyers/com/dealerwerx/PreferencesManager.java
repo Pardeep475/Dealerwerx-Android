@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import org.json.JSONException;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,8 +44,9 @@ public class PreferencesManager {
         SharedPreferences preferences = getPreferences();
         try{
             if(userInfo == null && preferences.contains(USERINFORMATION_KEY))
-                userInfo = UserInformation.fromBase64String(preferences.getString(USERINFORMATION_KEY, ""));
-        }catch(ClassNotFoundException e){}
+                userInfo = UserInformation.fromJsonString(preferences.getString(USERINFORMATION_KEY, ""));
+        }catch(JSONException e){
+        }
         finally {
             return userInfo;
         }
@@ -54,12 +57,12 @@ public class PreferencesManager {
 
         try{
             if(info != null)
-                editor.putString(USERINFORMATION_KEY, info.toBase64String());
+                editor.putString(USERINFORMATION_KEY, info.toJsonString());
             else
                 editor.remove(USERINFORMATION_KEY);
 
             editor.apply();
-        }catch(IOException e){
+        }catch(JSONException e){
             return false;
         }
 

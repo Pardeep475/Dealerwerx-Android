@@ -41,5 +41,8 @@
             android:id="@+id/nav_videos"
             android:icon="@android:drawable/ic_media_play"
             android:title="@string/videos" />
+        <item
+            android:id="@+id/nav_checkin"
+            android:title="@string/check_in" />
     </group>
 </menu>

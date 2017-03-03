@@ -922,7 +922,8 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
                                 ExifInterface.ORIENTATION_UNDEFINED);
 
                         Bitmap newnewBitmap = rotateBitmap(newBitmap, orientation);
-                        if(newnewBitmap != null){
+                        if(newnewBitmap != null && newnewBitmap != newBitmap){
+                            newBitmap.recycle();
                             newBitmap = newnewBitmap;
                         }
                     }
@@ -932,12 +933,16 @@ public class AddListingExtendedFragment extends TitleCompatFragment {
 
                 if (newBitmap.getHeight() > 2000) {
                     int nw = (int) (((double) 2000 / (double) newBitmap.getHeight()) * (newBitmap.getWidth()));
-                    newBitmap = Bitmap.createScaledBitmap(newBitmap, nw, 2000, true);
+                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(newBitmap, nw, 2000, true);
+                    newBitmap.recycle();
+                    newBitmap = scaledBitmap;
                 }
 
                 if (newBitmap.getWidth() > 2000) {
                     int nh = (int) ((newBitmap.getHeight()) * ((double) 2000 / (double) newBitmap.getWidth()));
-                    newBitmap = Bitmap.createScaledBitmap(newBitmap, 2000, nh, true);
+                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(newBitmap, 2000, nh, true);
+                    newBitmap.recycle();
+                    newBitmap = scaledBitmap;
                 }
 
                 final Dialog cropDialog = new Dialog(getActivity(),android.R.style.Theme_Black_NoTitleBar_Fullscreen);

@@ -185,4 +185,5 @@ If you have any questions about this Privacy Policy, please contact us.
     <string name="maps">Maps</string>
     <string name="country">Country</string>
     <string name="search">Search</string>
+    <string name="check_in">Check In</string>
 </resources>

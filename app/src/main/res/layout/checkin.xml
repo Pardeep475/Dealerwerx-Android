@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/checkin_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="You are not a SafeZone member!\n\nOpen the menu and tap Videos to see the various perks of enrolling in our system!"
+        android:textSize="15sp"
+        android:padding="10dp"/>
+    <ImageView
+        android:id="@+id/qr_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        />
+</LinearLayout>

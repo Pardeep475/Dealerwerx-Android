@@ -29,6 +29,8 @@ public class UserInformation implements Serializable{
     private String email;
     private String accessToken;
     private String phoneNumber;
+    private String qrImageUrl;
+
     private boolean isAgent;
 
     public int getId() {
@@ -55,14 +57,19 @@ public class UserInformation implements Serializable{
         return phoneNumber;
     }
 
+    public String getQrImageUrl() {
+        return qrImageUrl;
+    }
+
     public boolean getIsAgent() { return isAgent; }
 
-    public UserInformation(int id, String firstName, String lastName, String email, String phoneNumber, boolean isAgent, String accessToken) {
+    public UserInformation(int id, String firstName, String lastName, String email, String phoneNumber, String qrImageUrl, boolean isAgent, String accessToken) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.qrImageUrl = qrImageUrl;
         this.isAgent = isAgent;
         this.accessToken = accessToken;
     }
@@ -81,14 +88,20 @@ public class UserInformation implements Serializable{
         return  returnString;
     }
 
+    public String toJsonString() throws JSONException {
+        return toJsonObject().toString();
+    }
+
     public JSONObject toJsonObject() throws JSONException{
         JSONObject returnObject = new JSONObject();
 
+        returnObject.put("id", id);
         returnObject.put("firstName", firstName);
         returnObject.put("lastName", lastName);
         returnObject.put("email", email);
         returnObject.put("phone_number", phoneNumber == null ? JSONObject.NULL : phoneNumber);
-
+        returnObject.put("qr_url", qrImageUrl == null ? JSONObject.NULL : qrImageUrl);
+        returnObject.put("isAgent", isAgent);
         returnObject.put("access-token", accessToken);
 
         return returnObject;
@@ -101,6 +114,7 @@ public class UserInformation implements Serializable{
                 obj.getString("lastName"),
                 obj.getString("email"),
                 obj.isNull("phone_number") ? null : obj.getString("phone_number"),
+                obj.isNull("qr_url") ? null : obj.getString("qr_url"),
                 obj.getBoolean("isAgent"),
                 obj.getString("access-token")
         );
@@ -116,5 +130,9 @@ public class UserInformation implements Serializable{
         bais.close();
 
         return returnInformation;
+    }
+
+    public static UserInformation fromJsonString(String data) throws JSONException {
+        return fromJsonObject(new JSONObject(data));
     }
 }

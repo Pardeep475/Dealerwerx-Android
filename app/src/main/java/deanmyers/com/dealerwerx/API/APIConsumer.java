@@ -35,13 +35,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class APIConsumer {
     private static boolean TEST_LOCALHOST = false;
 
-    private static final String API_PROTOCOL = "http";
+    private static final String API_PROTOCOL = "https";
     private static final String API_LOCALDOMAIN = "10.183.7.194";
-    private static final String API_REMOTEDOMAIN = "dealerwerx-newpanel.us-east-1.elasticbeanstalk.com";
+    private static final String API_REMOTEDOMAIN = "dealerwerxexchange.com";
     private static final String API_DOMAIN = TEST_LOCALHOST ? API_LOCALDOMAIN : API_REMOTEDOMAIN;
     private static final String API_PATH = "/api/";
     private static final String API_ENDPOINT = API_PROTOCOL + "://" + API_DOMAIN + API_PATH;
     private static final String LISTINGS_SUFFIX = "listings";
+    private static final String LOOKINGFOR_LISTINGS_SUFFIX = "listings/looking";
     private static final String BEACONS_SUFFIX = "beacons";
     private static final String MYLISTINGS_SUFFIX = "listings/owned";
     private static final String MYBEACONS_SUFFIX = "beacons/owned";
@@ -104,6 +105,10 @@ public final class APIConsumer {
         return new GetListingsAsyncTask(accessToken, responder);
     }
 
+    public static GetLookingForListingsAsyncTask GetLookingForListings(String accessToken, APIResponder<Listing[]> responder){
+        return new GetLookingForListingsAsyncTask(accessToken, responder);
+    }
+
     public static GetMyListingsAsyncTask GetMyListings(String accessToken, APIResponder<Listing[]> responder){
         return new GetMyListingsAsyncTask(accessToken, responder);
     }
@@ -140,20 +145,20 @@ public final class APIConsumer {
         return new GetLatLonAsyncTask(address, responder);
     }
 
-    public static HoldListingAsyncTask HoldListing(String accessToken, int listingId, String date1, String date2, String date3, APIResponder<Void> responder){
-        return new HoldListingAsyncTask(accessToken, listingId, date1, date2, date3, responder);
+    public static HoldListingAsyncTask HoldListing(String accessToken, int listingId, String date1, String date2, String date3, boolean safezone, APIResponder<Void> responder){
+        return new HoldListingAsyncTask(accessToken, listingId, date1, date2, date3, safezone, responder);
     }
 
-    public static PurchaseListingAsyncTask PurchaseListing(String accessToken, int listingId, String date1, String date2, String date3, APIResponder<Void> responder){
-        return new PurchaseListingAsyncTask(accessToken, listingId, date1, date2, date3, responder);
+    public static PurchaseListingAsyncTask PurchaseListing(String accessToken, int listingId, String date1, String date2, String date3, boolean safezone, APIResponder<Void> responder){
+        return new PurchaseListingAsyncTask(accessToken, listingId, date1, date2, date3, safezone, responder);
     }
 
-    public static OfferOnListingAsyncTask OfferOnListing(String accessToken, int listingId, double offerPrice, String date1, String date2, String date3, APIResponder<Void> responder){
-        return new OfferOnListingAsyncTask(accessToken, listingId, offerPrice, date1, date2, date3, responder);
+    public static OfferOnListingAsyncTask OfferOnListing(String accessToken, int listingId, double offerPrice, String date1, String date2, String date3, boolean safezone, APIResponder<Void> responder){
+        return new OfferOnListingAsyncTask(accessToken, listingId, offerPrice, date1, date2, date3, safezone, responder);
     }
 
-    public static GetListingFromBeaconAsyncTask GetListingFromBeacon(String accessToken, String uuid, int major, int minor, APIResponder<Listing> responder){
-        return new GetListingFromBeaconAsyncTask(accessToken, uuid, major, minor, responder);
+    public static GetListingFromBeaconAsyncTask GetListingFromBeacon(String accessToken, String uuid, int major, int minor, boolean isLookingMode, APIResponder<Listing> responder){
+        return new GetListingFromBeaconAsyncTask(accessToken, uuid, major, minor, isLookingMode ? 1 : 0, responder);
     }
 
     public static GetMyBeaconsAsyncTask GetMyBeacons(String accessToken, APIResponder<Beacon[]> responder){
@@ -371,6 +376,55 @@ public final class APIConsumer {
             APITaskResult<Listing[]> returnResult = new APITaskResult<Listing[]>();
 
             String urlString = String.format("%s%s?per-page=10000&sort=-datePosted", API_ENDPOINT, LISTINGS_SUFFIX);
+
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                setBearer(accessToken, conn);
+
+                int responseCode = conn.getResponseCode();
+
+                if(responseCode != HttpURLConnection.HTTP_OK)
+                    throw new Exception("Invalid request");
+
+
+                InputStream is = conn.getInputStream();
+                String data = readResponse(is);
+                is.close();
+
+                JSONObject response = new JSONObject(data);
+
+                Listing[] arrListing = Listing.fromJsonArray(response.getJSONArray("listings"));
+
+                returnResult.result = arrListing;
+                returnResult.success = true;
+
+            } catch (MalformedURLException e) {
+                returnResult.errorMessage = "The URL was malformed.";
+            } catch (IOException e) {
+                returnResult.errorMessage = "Unable to make request.";
+            } catch(Exception e){
+                returnResult.errorMessage = e.getMessage();
+            }
+            finally {
+                return returnResult;
+            }
+        }
+    }
+
+    public static final class GetLookingForListingsAsyncTask extends APIAsyncTask<Listing[]>{
+        private String accessToken;
+
+        GetLookingForListingsAsyncTask(String accessToken, APIResponder<Listing[]> responder) {
+            super(responder);
+            this.accessToken = accessToken;
+        }
+
+        @Override
+        protected APITaskResult<Listing[]> doInBackground(Void... params) {
+            APITaskResult<Listing[]> returnResult = new APITaskResult<Listing[]>();
+
+            String urlString = String.format("%s%s?per-page=10000&sort=-datePosted", API_ENDPOINT, LOOKINGFOR_LISTINGS_SUFFIX);
 
             try {
                 URL url = new URL(urlString);
@@ -891,13 +945,15 @@ public final class APIConsumer {
         String uuid;
         int major;
         int minor;
+        int lookingMode;
         String accessToken;
 
-        GetListingFromBeaconAsyncTask(String accessToken, String uuid, int major, int minor, APIResponder<Listing> responder) {
+        GetListingFromBeaconAsyncTask(String accessToken, String uuid, int major, int minor, int lookingMode, APIResponder<Listing> responder) {
             super(responder);
             this.uuid = uuid;
             this.major = major;
             this.minor = minor;
+            this.lookingMode = lookingMode;
             this.accessToken = accessToken;
         }
 
@@ -905,7 +961,7 @@ public final class APIConsumer {
         protected APITaskResult<Listing> doInBackground(Void... params) {
             APITaskResult<Listing> returnResult = new APITaskResult<Listing>();
 
-            String urlString = String.format(Locale.CANADA, "%s%s/%s/%d/%d", API_ENDPOINT, FROMBEACON_SUFFIX, uuid, major, minor);
+            String urlString = String.format(Locale.CANADA, "%s%s/%s/%d/%d/%d", API_ENDPOINT, FROMBEACON_SUFFIX, uuid, major, minor, lookingMode);
 
             try {
                 URL url = new URL(urlString);
@@ -1416,14 +1472,16 @@ public final class APIConsumer {
         private String accessToken;
         private int listingId;
         private String date1, date2, date3;
+        private boolean safezone;
 
-        HoldListingAsyncTask(String accessToken, int listingId, String date1, String date2, String date3, APIResponder<Void> responder) {
+        HoldListingAsyncTask(String accessToken, int listingId, String date1, String date2, String date3, boolean safezone, APIResponder<Void> responder) {
             super(responder);
             this.accessToken = accessToken;
             this.listingId = listingId;
             this.date1 = date1;
             this.date2 = date2;
             this.date3 = date3;
+            this.safezone = safezone;
         }
 
         @Override
@@ -1442,6 +1500,7 @@ public final class APIConsumer {
                 postData.put("date1", date1);
                 postData.put("date2", date2);
                 postData.put("date3", date3);
+                postData.put("safezone", safezone);
 
                 OutputStream os = conn.getOutputStream();
                 postData(os, postData.toString());
@@ -1481,14 +1540,16 @@ public final class APIConsumer {
         private String accessToken;
         private int listingId;
         private String date1, date2, date3;
+        private boolean safezone;
 
-        PurchaseListingAsyncTask(String accessToken, int listingId, String date1, String date2, String date3, APIResponder<Void> responder) {
+        PurchaseListingAsyncTask(String accessToken, int listingId, String date1, String date2, String date3, boolean safezone, APIResponder<Void> responder) {
             super(responder);
             this.accessToken = accessToken;
             this.listingId = listingId;
             this.date1 = date1;
             this.date2 = date2;
             this.date3 = date3;
+            this.safezone = safezone;
         }
 
         @Override
@@ -1507,6 +1568,7 @@ public final class APIConsumer {
                 postData.put("date1", date1);
                 postData.put("date2", date2);
                 postData.put("date3", date3);
+                postData.put("safezone", safezone);
 
                 OutputStream os = conn.getOutputStream();
                 postData(os, postData.toString());
@@ -1547,8 +1609,9 @@ public final class APIConsumer {
         private int listingId;
         private double offerPrice;
         private String date1, date2, date3;
+        private boolean safezone;
 
-        OfferOnListingAsyncTask(String accessToken, int listingId, double offerPrice, String date1, String date2, String date3, APIResponder<Void> responder) {
+        OfferOnListingAsyncTask(String accessToken, int listingId, double offerPrice, String date1, String date2, String date3, boolean safezone, APIResponder<Void> responder) {
             super(responder);
             this.accessToken = accessToken;
             this.listingId = listingId;
@@ -1556,6 +1619,7 @@ public final class APIConsumer {
             this.date1 = date1;
             this.date2 = date2;
             this.date3 = date3;
+            this.safezone = safezone;
         }
 
         @Override
@@ -1576,6 +1640,7 @@ public final class APIConsumer {
                 postData.put("date1", date1);
                 postData.put("date2", date2);
                 postData.put("date3", date3);
+                postData.put("safezone", safezone);
 
                 OutputStream os = conn.getOutputStream();
                 postData(os, postData.toString());

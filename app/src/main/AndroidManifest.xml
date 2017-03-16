@@ -71,6 +71,11 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".LookingForActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".VideosActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
@@ -158,6 +163,12 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".CheckinActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"

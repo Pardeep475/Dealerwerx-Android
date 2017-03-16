@@ -240,6 +240,7 @@ public class BeaconService extends IntentService implements BeaconConsumer {
                                     uuid,
                                     major,
                                     minor,
+                                    PreferencesManager.getBeaconLookingMode(),
                                     new APIResponder<Listing>() {
                                         @Override
                                         public void success(final Listing listing) {

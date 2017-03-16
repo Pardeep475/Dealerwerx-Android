@@ -113,6 +113,8 @@ public class ScavengerListingsAdapter extends ArrayAdapter<Listing> {
             } else {
                 safeZone.setImageDrawable(context.getResources().getDrawable(R.drawable.dealerwerx_safezone));
             }
+        }else{
+            safeZone.setImageBitmap(null);
         }
 
         ImageMedia[] media = vehicle.getMedia();

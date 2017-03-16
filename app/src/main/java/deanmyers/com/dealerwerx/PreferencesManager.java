@@ -29,6 +29,7 @@ public class PreferencesManager {
     private static final String USERINFORMATION_KEY = "USERINFORMATION";
     private static final String BACKGROUNDSCANNING_KEY = "BACKGROUNDSCANNING";
     private static final String LIKEDLIST_KEYFORMAT = "LIKEDLIST_%d";
+    private static final String BEACON_LOOKING_MODE_KEY = "BEACONLOOKINGMODE";
 
     private static UserInformation userInfo;
 
@@ -79,6 +80,19 @@ public class PreferencesManager {
         SharedPreferences.Editor editor = getPreferences().edit();
 
         editor.putBoolean(BACKGROUNDSCANNING_KEY, allow);
+
+        editor.apply();
+    }
+
+    public static boolean getBeaconLookingMode(){
+        SharedPreferences preferences = getPreferences();
+        return preferences.getBoolean(BEACON_LOOKING_MODE_KEY, false);
+    }
+
+    public static void setBeaconLookingMode(boolean allow){
+        SharedPreferences.Editor editor = getPreferences().edit();
+
+        editor.putBoolean(BEACON_LOOKING_MODE_KEY, allow);
 
         editor.apply();
     }

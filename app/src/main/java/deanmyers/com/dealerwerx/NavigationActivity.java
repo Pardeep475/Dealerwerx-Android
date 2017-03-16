@@ -166,6 +166,12 @@ public class NavigationActivity extends TitleCompatActivity
                 startActivity(intent);
                 finish();
             }
+            else if(id == R.id.nav_lookingfor){
+                Intent intent = new Intent(this, LookingForActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
             else if(id == R.id.nav_mybeacons){
                 Intent intent = new Intent(this, MyBeaconsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -192,6 +198,12 @@ public class NavigationActivity extends TitleCompatActivity
             }
             else if(id == R.id.nav_checkin){
                 Intent intent = new Intent(this, CheckinActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+            else if(id == R.id.nav_settings){
+                Intent intent = new Intent(this, SettingsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();

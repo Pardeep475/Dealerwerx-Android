@@ -347,9 +347,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                         }
                     });
 
-            AlertDialog dialog = builder.create();
+            final AlertDialog mainDialog = builder.create();
 
-            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            mainDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
                     final AlertDialog alertDialog = (AlertDialog)dialog;
@@ -360,38 +360,34 @@ public class ListingDetailActivity extends TitleCompatActivity {
 
                     final View appointmentButtons = alertDialog.findViewById(R.id.safezone_only);
 
-                    if(!listing.isSafeZone())
-                        appointmentButtons.setVisibility(View.GONE);
-                    else{
-                        date1 = null;
-                        date2 = null;
-                        date3 = null;
+                    date1 = null;
+                    date2 = null;
+                    date3 = null;
 
-                        final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
-                        final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
-                        final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
+                    final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
+                    final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
+                    final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
 
-                        dateInput1.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getDate(1, dateInput1);
-                            }
-                        });
+                    dateInput1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getDate(1, dateInput1);
+                        }
+                    });
 
-                        dateInput2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getDate(2, dateInput2);
-                            }
-                        });
+                    dateInput2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getDate(2, dateInput2);
+                        }
+                    });
 
-                        dateInput3.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getDate(3, dateInput3);
-                            }
-                        });
-                    }
+                    dateInput3.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getDate(3, dateInput3);
+                        }
+                    });
 
                     positiveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -400,7 +396,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                             String dateString2 = "";
                             String dateString3 = "";
 
-                            if(listing.isSafeZone() && (date1 != null || date2 != null || date3 != null)){
+                            if((date1 != null || date2 != null || date3 != null)){
                                 SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
                                 if(date1 != null)
                                     dateString1 = dt1.format(date1);
@@ -408,7 +404,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                     dateString2 = dt1.format(date2);
                                 if(date3 == null)
                                     dateString3 = dt1.format(date3);
-                            }else if(listing.isSafeZone()){
+                            }else{
                                 Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -423,6 +419,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                     dateString1,
                                     dateString2,
                                     dateString3,
+                                    requestSafezone == null ? false : requestSafezone,
                                     new APIResponder<Void>() {
                                         @Override
                                         public void success(Void result) {
@@ -451,9 +448,30 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 }
             });
 
-            dialog.show();
+            if(!listing.isSafeZone() && requestSafezone == null){
+                new AlertDialog.Builder(this).setTitle("Not SafeZone Verified")
+                        .setMessage("This listing is not SafeZone verified. Would you like to request SafeZone Approval to the seller?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestSafezone = true;
+                        dialog.dismiss();
+                        mainDialog.show();
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestSafezone = false;
+                        dialog.dismiss();
+                        mainDialog.show();
+                    }
+                }).create().show();
+            }else{
+                mainDialog.show();
+            }
         }
     }
+    private Boolean requestSafezone = null;
 
     private final static int REQUEST_MAKEOFFER = 2;
     private void makeOffer(){
@@ -470,9 +488,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                         }
                     });
 
-            AlertDialog dialog = builder.create();
+            final AlertDialog mainDialog = builder.create();
 
-            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            mainDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
                     final AlertDialog alertDialog = (AlertDialog)dialog;
@@ -489,38 +507,36 @@ public class ListingDetailActivity extends TitleCompatActivity {
 
                     final View appointmentButtons = alertDialog.findViewById(R.id.safezone_only);
 
-                    if(!listing.isSafeZone())
-                        appointmentButtons.setVisibility(View.GONE);
-                    else{
-                        date1 = null;
-                        date2 = null;
-                        date3 = null;
 
-                        final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
-                        final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
-                        final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
+                    date1 = null;
+                    date2 = null;
+                    date3 = null;
 
-                        dateInput1.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getDate(1, dateInput1);
-                            }
-                        });
+                    final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
+                    final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
+                    final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
 
-                        dateInput2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getDate(2, dateInput2);
-                            }
-                        });
+                    dateInput1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getDate(1, dateInput1);
+                        }
+                    });
 
-                        dateInput3.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getDate(3, dateInput3);
-                            }
-                        });
-                    }
+                    dateInput2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getDate(2, dateInput2);
+                        }
+                    });
+
+                    dateInput3.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getDate(3, dateInput3);
+                        }
+                    });
+
 
                     positiveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -535,7 +551,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                             String dateString2 = "";
                             String dateString3 = "";
 
-                            if(listing.isSafeZone() && (date1 != null || date2 != null || date3 != null)){
+                            if((date1 != null || date2 != null || date3 != null)){
                                 SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
                                 if(date1 != null)
                                     dateString1 = dt1.format(date1);
@@ -543,7 +559,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                     dateString2 = dt1.format(date2);
                                 if(date3 == null)
                                     dateString3 = dt1.format(date3);
-                            }else if(listing.isSafeZone()){
+                            }else{
                                 Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -564,6 +580,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                             dateString1,
                                             dateString2,
                                             dateString3,
+                                            requestSafezone == null ? false : requestSafezone,
                                             new APIResponder<Void>() {
                                                 @Override
                                                 public void success(Void result) {
@@ -605,7 +622,28 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 }
             });
 
-            dialog.show();
+            if(!listing.isSafeZone() && requestSafezone == null){
+                new AlertDialog.Builder(this).setTitle("Not SafeZone Verified")
+                        .setMessage("This listing is not SafeZone verified. Would you like to request SafeZone Approval to the seller?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestSafezone = true;
+                        dialog.dismiss();
+                        mainDialog.show();
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestSafezone = false;
+                        dialog.dismiss();
+                        mainDialog.show();
+                    }
+                }).create().show();
+            }else{
+                mainDialog.show();
+            }
+
         }
     }
 
@@ -681,9 +719,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                     .setPositiveButton("Request", null)
                     .setNegativeButton("Cancel", null);
 
-            AlertDialog dialog = builder.create();
+            final AlertDialog mainDialog = builder.create();
 
-            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            mainDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
                     final AlertDialog alertDialog = (AlertDialog)dialog;
@@ -694,38 +732,34 @@ public class ListingDetailActivity extends TitleCompatActivity {
 
                     final View appointmentButtons = alertDialog.findViewById(R.id.safezone_only);
 
-                    if(!listing.isSafeZone())
-                        appointmentButtons.setVisibility(View.GONE);
-                    else{
-                        date1 = null;
-                        date2 = null;
-                        date3 = null;
+                    date1 = null;
+                    date2 = null;
+                    date3 = null;
 
-                        final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
-                        final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
-                        final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
+                    final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
+                    final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
+                    final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
 
-                        dateInput1.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getDate(1, dateInput1);
-                            }
-                        });
+                    dateInput1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getDate(1, dateInput1);
+                        }
+                    });
 
-                        dateInput2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getDate(2, dateInput2);
-                            }
-                        });
+                    dateInput2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getDate(2, dateInput2);
+                        }
+                    });
 
-                        dateInput3.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getDate(3, dateInput3);
-                            }
-                        });
-                    }
+                    dateInput3.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getDate(3, dateInput3);
+                        }
+                    });
 
 
                     positiveButton.setOnClickListener(new View.OnClickListener() {
@@ -735,7 +769,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                             String dateString2 = "";
                             String dateString3 = "";
 
-                            if(listing.isSafeZone() && (date1 != null || date2 != null || date3 != null)){
+                            if((date1 != null || date2 != null || date3 != null)){
                                 SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
                                 if(date1 != null)
                                     dateString1 = dt1.format(date1);
@@ -743,7 +777,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                     dateString2 = dt1.format(date2);
                                 if(date3 == null)
                                     dateString3 = dt1.format(date3);
-                            }else if(listing.isSafeZone()){
+                            }else{
                                 Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -757,6 +791,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                     dateString1,
                                     dateString2,
                                     dateString3,
+                                    requestSafezone == null ? false : requestSafezone,
                                     new APIResponder<Void>() {
                                         @Override
                                         public void success(Void result) {
@@ -785,7 +820,29 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 }
             });
 
-            dialog.show();
+            if(!listing.isSafeZone() && requestSafezone == null){
+                new AlertDialog.Builder(this).setTitle("Not SafeZone Verified")
+                        .setMessage("This listing is not SafeZone verified. Would you like to request SafeZone Approval to the seller?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestSafezone = true;
+                                dialog.dismiss();
+                                mainDialog.show();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestSafezone = false;
+                                dialog.dismiss();
+                                mainDialog.show();
+                            }
+                        })
+                        .create().show();
+            }else{
+                mainDialog.show();
+            }
         }
     }
 

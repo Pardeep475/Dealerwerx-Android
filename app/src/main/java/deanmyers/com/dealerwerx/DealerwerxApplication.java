@@ -42,18 +42,6 @@ public class DealerwerxApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        APIConsumer.GetListingFromBeacon("Lewr-jPtqCBC7C273o07Ph7-ZowQR5wW", "bca508a7-34a8-4f4d-850c-56603ae7909f", 0, 1, new APIResponder<Listing>() {
-            @Override
-            public void success(Listing result) {
-                int b = 0;
-            }
-
-            @Override
-            public void error(String errorMessage) {
-                int b = 0;
-            }
-        }).execute();
-
         overrideFont(getApplicationContext(), "SERIF", "fonts/font.ttf");
         appContext = getApplicationContext();
         FacebookSdk.sdkInitialize(appContext);

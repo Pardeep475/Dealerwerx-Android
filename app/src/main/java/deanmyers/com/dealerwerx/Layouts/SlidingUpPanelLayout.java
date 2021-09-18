@@ -927,7 +927,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
         }
         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
         boolean result;
-        final int save = canvas.save(Canvas.CLIP_SAVE_FLAG);
+        final int save = canvas.save(/*Canvas.ALL_SAVE_FLAG*/);
 
         boolean drawScrim = false;
 

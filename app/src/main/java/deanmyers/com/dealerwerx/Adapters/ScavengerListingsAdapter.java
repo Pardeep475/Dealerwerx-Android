@@ -1,9 +1,8 @@
 package deanmyers.com.dealerwerx.Adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 import java.util.Locale;
 
-import deanmyers.com.dealerwerx.API.APIConsumer;
-import deanmyers.com.dealerwerx.API.APIResponder;
 import deanmyers.com.dealerwerx.API.BoatExtra;
 import deanmyers.com.dealerwerx.API.CarExtra;
 import deanmyers.com.dealerwerx.API.ImageMedia;

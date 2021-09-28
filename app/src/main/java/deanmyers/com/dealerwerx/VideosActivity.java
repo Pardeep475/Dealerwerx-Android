@@ -1,32 +1,20 @@
 package deanmyers.com.dealerwerx;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
-import java.util.List;
 
 import deanmyers.com.dealerwerx.API.APIConsumer;
 import deanmyers.com.dealerwerx.API.APIResponder;
-import deanmyers.com.dealerwerx.API.Listing;
 import deanmyers.com.dealerwerx.API.VideoEntry;
-import deanmyers.com.dealerwerx.Adapters.BoatListingsAdapter;
-import deanmyers.com.dealerwerx.Adapters.CarListingsAdapter;
-import deanmyers.com.dealerwerx.Adapters.EquipmentListingsAdapter;
-import deanmyers.com.dealerwerx.Adapters.ListingsAdapter;
-import deanmyers.com.dealerwerx.Adapters.MotorcycleListingsAdapter;
-import deanmyers.com.dealerwerx.Adapters.OtherListingsAdapter;
 import deanmyers.com.dealerwerx.Adapters.VideosAdapter;
 
 public class VideosActivity extends NavigationActivity {

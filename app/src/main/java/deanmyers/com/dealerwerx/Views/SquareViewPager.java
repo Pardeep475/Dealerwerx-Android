@@ -1,11 +1,9 @@
 package deanmyers.com.dealerwerx.Views;
 
 import android.content.Context;
-import android.graphics.Point;
-import android.support.v4.view.ViewPager;
+
+import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
-import android.view.Display;
-import android.view.WindowManager;
 
 /**
  * Created by mac3 on 2016-11-25.

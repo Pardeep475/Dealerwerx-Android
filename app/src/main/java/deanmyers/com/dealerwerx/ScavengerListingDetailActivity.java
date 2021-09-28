@@ -1,12 +1,11 @@
 package deanmyers.com.dealerwerx;
 
 import android.app.Dialog;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
-import deanmyers.com.dealerwerx.API.APIConsumer;
-import deanmyers.com.dealerwerx.API.APIResponder;
 import deanmyers.com.dealerwerx.API.BoatExtra;
 import deanmyers.com.dealerwerx.API.CarExtra;
 import deanmyers.com.dealerwerx.API.ImageMedia;

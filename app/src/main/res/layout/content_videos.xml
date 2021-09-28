@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v4.widget.SwipeRefreshLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -18,7 +18,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/listings_list"
                 android:descendantFocusability="blocksDescendants"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">

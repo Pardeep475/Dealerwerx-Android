@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "254692634151",
+    "project_id": "dealerwerx-3a1bb",
+    "storage_bucket": "dealerwerx-3a1bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254692634151:android:6a3539aeba1668a496a802",
+        "android_client_info": {
+          "package_name": "deanmyers.com.dealerwerx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254692634151-5721uc2jtdosr4k0emqudh4tu222dllv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcm5JxURK_ssbGyhZhojWIbizh_T6pngs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254692634151-5721uc2jtdosr4k0emqudh4tu222dllv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

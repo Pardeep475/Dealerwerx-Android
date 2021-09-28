@@ -3,19 +3,16 @@ package deanmyers.com.dealerwerx;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -46,11 +43,6 @@ import deanmyers.com.dealerwerx.API.ImageMedia;
 import deanmyers.com.dealerwerx.API.Listing;
 import deanmyers.com.dealerwerx.API.MotorcycleExtra;
 import deanmyers.com.dealerwerx.API.Vehicle;
-import deanmyers.com.dealerwerx.Adapters.BoatListingsAdapter;
-import deanmyers.com.dealerwerx.Adapters.CarListingsAdapter;
-import deanmyers.com.dealerwerx.Adapters.EquipmentListingsAdapter;
-import deanmyers.com.dealerwerx.Adapters.ListingsAdapter;
-import deanmyers.com.dealerwerx.Adapters.MotorcycleListingsAdapter;
 
 /**
  * Created by mac3 on 2016-11-18.

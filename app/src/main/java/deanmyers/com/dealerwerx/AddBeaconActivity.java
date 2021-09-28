@@ -5,9 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -22,7 +19,6 @@ import java.util.regex.Pattern;
 import deanmyers.com.dealerwerx.API.APIConsumer;
 import deanmyers.com.dealerwerx.API.APIResponder;
 import deanmyers.com.dealerwerx.API.Beacon;
-import deanmyers.com.dealerwerx.API.VinDecodeResult;
 
 public class AddBeaconActivity extends TitleCompatActivity {
     private View mMyView;

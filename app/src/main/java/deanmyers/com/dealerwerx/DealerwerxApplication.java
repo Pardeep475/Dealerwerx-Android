@@ -52,12 +52,13 @@ public class DealerwerxApplication extends Application {
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_POWER_CONNECTED);
         filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
-        registerReceiver(receiver ,filter);
+        registerReceiver(receiver, filter);
 
         registerCallbacks();
-
-        Intent serviceIntent = new Intent(this, BeaconService.class);
-        startService(serviceIntent);
+        if (!isBackground()) {
+            Intent serviceIntent = new Intent(this, BeaconService.class);
+            startService(serviceIntent);
+        }
     }
 
     public static Context getContext(){

@@ -5,12 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +18,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -67,16 +68,16 @@ public class ListingDetailActivity extends TitleCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ViewGroup container = (ViewGroup)findViewById(R.id.detail_container);
+        ViewGroup container = (ViewGroup) findViewById(R.id.detail_container);
 
-        listing = (Listing)getIntent().getSerializableExtra("listing");
+        listing = (Listing) getIntent().getSerializableExtra("listing");
         Vehicle vehicle = listing.getVehicle();
 
 
         LayoutInflater inflater = getLayoutInflater();
 
         View v;
-        switch (vehicle.getType()){
+        switch (vehicle.getType()) {
             case Car:
                 v = inflater.inflate(R.layout.content_viewcar, container, false);
                 break;
@@ -99,14 +100,14 @@ public class ListingDetailActivity extends TitleCompatActivity {
         container.addView(v);
 
         View bottomButtons = findViewById(R.id.bottom_buttons);
-        if(listing.isMyPost())
+        if (listing.isMyPost())
             bottomButtons.setVisibility(View.GONE);
 
-        holdListing = (LinearLayout)findViewById(R.id.action_listing_hold);
-        buyListing = (LinearLayout)findViewById(R.id.action_listing_buy);
-        makeOfferOnListing = (LinearLayout)findViewById(R.id.action_listing_makeoffer);
-        likeListing = (LinearLayout)findViewById(R.id.action_listing_like);
-        shareListing = (LinearLayout)findViewById(R.id.action_listing_share);
+        holdListing = (LinearLayout) findViewById(R.id.action_listing_hold);
+        buyListing = (LinearLayout) findViewById(R.id.action_listing_buy);
+        makeOfferOnListing = (LinearLayout) findViewById(R.id.action_listing_makeoffer);
+        likeListing = (LinearLayout) findViewById(R.id.action_listing_like);
+        shareListing = (LinearLayout) findViewById(R.id.action_listing_share);
 
         updateLikeButton(PreferencesManager.hasLiked(listing.getId()));
 
@@ -142,42 +143,41 @@ public class ListingDetailActivity extends TitleCompatActivity {
         });
 
 
-
         media = vehicle.getMedia();
-        pager = (ViewPager)v.findViewById(R.id.image_container);
+        pager = (ViewPager) v.findViewById(R.id.image_container);
 
-        TextView mTitle = (TextView)v.findViewById(R.id.title);
-        TextView mDescription = (TextView)v.findViewById(R.id.description);
-        TextView mPostedBy = (TextView)v.findViewById(R.id.seller);
-        TextView mAskingPrice = (TextView)v.findViewById(R.id.asking_price);
-        TextView mLocation = (TextView)v.findViewById(R.id.location);
-        TextView mDatePosted = (TextView)v.findViewById(R.id.date_posted);
-        TextView mYear = (TextView)v.findViewById(R.id.year);
-        TextView mMake = (TextView)v.findViewById(R.id.make);
-        TextView mModel = (TextView)v.findViewById(R.id.model);
-        TextView mTrim = (TextView)v.findViewById(R.id.trim);
-        TextView mColor = (TextView)v.findViewById(R.id.color);
-        TextView mInteriorColor = (TextView)v.findViewById(R.id.interior_color);
-        TextView mExteriorColor = (TextView)v.findViewById(R.id.exterior_color);
-        TextView mBodyStyle = (TextView)v.findViewById(R.id.bodystyle);
-        TextView mEngine = (TextView)v.findViewById(R.id.engine);
-        TextView mFuelType = (TextView)v.findViewById(R.id.fueltype);
-        TextView mKilometers = (TextView)v.findViewById(R.id.kilometers);
-        TextView mDoors = (TextView)v.findViewById(R.id.doors);
-        TextView mSeats = (TextView)v.findViewById(R.id.seats);
-        TextView mTransmission = (TextView)v.findViewById(R.id.transmission);
-        TextView mDriveTrain = (TextView)v.findViewById(R.id.drivetrain);
-        TextView mVin = (TextView)v.findViewById(R.id.vin);
-        TextView mAppointmentRequired = (TextView)v.findViewById(R.id.appointment_required);
-        TextView mCustomerNumber = (TextView)v.findViewById(R.id.customer_number);
-        TextView mStockNumber = (TextView)v.findViewById(R.id.stock_number);
+        TextView mTitle = (TextView) v.findViewById(R.id.title);
+        TextView mDescription = (TextView) v.findViewById(R.id.description);
+        TextView mPostedBy = (TextView) v.findViewById(R.id.seller);
+        TextView mAskingPrice = (TextView) v.findViewById(R.id.asking_price);
+        TextView mLocation = (TextView) v.findViewById(R.id.location);
+        TextView mDatePosted = (TextView) v.findViewById(R.id.date_posted);
+        TextView mYear = (TextView) v.findViewById(R.id.year);
+        TextView mMake = (TextView) v.findViewById(R.id.make);
+        TextView mModel = (TextView) v.findViewById(R.id.model);
+        TextView mTrim = (TextView) v.findViewById(R.id.trim);
+        TextView mColor = (TextView) v.findViewById(R.id.color);
+        TextView mInteriorColor = (TextView) v.findViewById(R.id.interior_color);
+        TextView mExteriorColor = (TextView) v.findViewById(R.id.exterior_color);
+        TextView mBodyStyle = (TextView) v.findViewById(R.id.bodystyle);
+        TextView mEngine = (TextView) v.findViewById(R.id.engine);
+        TextView mFuelType = (TextView) v.findViewById(R.id.fueltype);
+        TextView mKilometers = (TextView) v.findViewById(R.id.kilometers);
+        TextView mDoors = (TextView) v.findViewById(R.id.doors);
+        TextView mSeats = (TextView) v.findViewById(R.id.seats);
+        TextView mTransmission = (TextView) v.findViewById(R.id.transmission);
+        TextView mDriveTrain = (TextView) v.findViewById(R.id.drivetrain);
+        TextView mVin = (TextView) v.findViewById(R.id.vin);
+        TextView mAppointmentRequired = (TextView) v.findViewById(R.id.appointment_required);
+        TextView mCustomerNumber = (TextView) v.findViewById(R.id.customer_number);
+        TextView mStockNumber = (TextView) v.findViewById(R.id.stock_number);
 
-        ImageView mSafeZone = (ImageView)v.findViewById(R.id.image_safezone_approval);
+        ImageView mSafeZone = (ImageView) v.findViewById(R.id.image_safezone_approval);
 
 
-        switch(vehicle.getType()){
+        switch (vehicle.getType()) {
             case Car:
-                CarExtra cExtra = (CarExtra)vehicle.getExtra();
+                CarExtra cExtra = (CarExtra) vehicle.getExtra();
                 mYear.setText(String.format(Locale.CANADA, "%d", cExtra.getYear()));
                 mMake.setText(cExtra.getMake());
                 mModel.setText(cExtra.getModel());
@@ -194,32 +194,32 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 mDriveTrain.setText(cExtra.getDriveTrain());
                 mVin.setText(cExtra.getVin());
 
-                if(isUnset(cExtra.getTrim()))
-                    ((View)mTrim.getParent()).setVisibility(View.GONE);
+                if (isUnset(cExtra.getTrim()))
+                    ((View) mTrim.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(cExtra.getInteriorColor()))
-                    ((View)mInteriorColor.getParent()).setVisibility(View.GONE);
+                if (isUnset(cExtra.getInteriorColor()))
+                    ((View) mInteriorColor.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(cExtra.getBodyStyle()))
-                    ((View)mBodyStyle.getParent()).setVisibility(View.GONE);
+                if (isUnset(cExtra.getBodyStyle()))
+                    ((View) mBodyStyle.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(cExtra.getFuelType()))
-                    ((View)mFuelType.getParent()).setVisibility(View.GONE);
+                if (isUnset(cExtra.getFuelType()))
+                    ((View) mFuelType.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(mDoors.getText().toString()))
-                    ((View)mDoors.getParent()).setVisibility(View.GONE);
+                if (isUnset(mDoors.getText().toString()))
+                    ((View) mDoors.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(mSeats.getText().toString()))
-                    ((View)mSeats.getParent()).setVisibility(View.GONE);
+                if (isUnset(mSeats.getText().toString()))
+                    ((View) mSeats.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(cExtra.getTransmission()))
-                    ((View)mTransmission.getParent()).setVisibility(View.GONE);
+                if (isUnset(cExtra.getTransmission()))
+                    ((View) mTransmission.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(cExtra.getDriveTrain()))
-                    ((View)mDriveTrain.getParent()).setVisibility(View.GONE);
+                if (isUnset(cExtra.getDriveTrain()))
+                    ((View) mDriveTrain.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(cExtra.getVin()))
-                    ((View)mVin.getParent()).setVisibility(View.GONE);
+                if (isUnset(cExtra.getVin()))
+                    ((View) mVin.getParent()).setVisibility(View.GONE);
                 break;
             case Motorcycle:
                 MotorcycleExtra mExtra = (MotorcycleExtra) vehicle.getExtra();
@@ -233,14 +233,14 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 mFuelType.setText(mExtra.getFuelType());
                 mKilometers.setText(String.format(Locale.CANADA, "%d", mExtra.getKilometers()));
 
-                if(isUnset(mExtra.getTrim()))
-                    ((View)mTrim.getParent()).setVisibility(View.GONE);
+                if (isUnset(mExtra.getTrim()))
+                    ((View) mTrim.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(mExtra.getBodyStyle()))
-                    ((View)mBodyStyle.getParent()).setVisibility(View.GONE);
+                if (isUnset(mExtra.getBodyStyle()))
+                    ((View) mBodyStyle.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(mExtra.getFuelType()))
-                    ((View)mFuelType.getParent()).setVisibility(View.GONE);
+                if (isUnset(mExtra.getFuelType()))
+                    ((View) mFuelType.getParent()).setVisibility(View.GONE);
                 break;
             case Boat:
                 BoatExtra bExtra = (BoatExtra) vehicle.getExtra();
@@ -254,14 +254,14 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 mFuelType.setText(bExtra.getFuelType());
                 mKilometers.setText(String.format(Locale.CANADA, "%d", bExtra.getKilometers()));
 
-                if(isUnset(bExtra.getTrim()))
-                    ((View)mTrim.getParent()).setVisibility(View.GONE);
+                if (isUnset(bExtra.getTrim()))
+                    ((View) mTrim.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(bExtra.getBodyStyle()))
-                    ((View)mBodyStyle.getParent()).setVisibility(View.GONE);
+                if (isUnset(bExtra.getBodyStyle()))
+                    ((View) mBodyStyle.getParent()).setVisibility(View.GONE);
 
-                if(isUnset(bExtra.getFuelType()))
-                    ((View)mFuelType.getParent()).setVisibility(View.GONE);
+                if (isUnset(bExtra.getFuelType()))
+                    ((View) mFuelType.getParent()).setVisibility(View.GONE);
                 break;
             case Equipment:
             case Other:
@@ -274,22 +274,22 @@ public class ListingDetailActivity extends TitleCompatActivity {
         mDatePosted.setText(listing.getDatePosted());
 
         if (isUnset(vehicle.getDescription())) {
-            ((View)mDescription.getParent()).setVisibility(View.GONE);
+            ((View) mDescription.getParent()).setVisibility(View.GONE);
         }
 
         if (isUnset(listing.getCustomerNumber())) {
-            ((View)mCustomerNumber.getParent()).setVisibility(View.GONE);
-        }else{
+            ((View) mCustomerNumber.getParent()).setVisibility(View.GONE);
+        } else {
             mCustomerNumber.setText(String.format(Locale.CANADA, "%d", listing.getCustomerNumber()));
         }
 
         if (isUnset(vehicle.getStockNumber())) {
-            ((View)mStockNumber.getParent()).setVisibility(View.GONE);
-        }else{
+            ((View) mStockNumber.getParent()).setVisibility(View.GONE);
+        } else {
             mStockNumber.setText(vehicle.getStockNumber());
         }
 
-        switch(vehicle.getType()){
+        switch (vehicle.getType()) {
             case Car:
             case Motorcycle:
             case Boat:
@@ -302,26 +302,38 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 setViewTitlePrimary(listing.getVehicle().getTitle());
                 setViewTitle("");
         }
-        if(listing.isSafeZone())
+        if (listing.isSafeZone())
             mSafeZone.setImageResource(R.drawable.dealerwerx_safezone);
-        else{
+        else {
             mAppointmentRequired.setVisibility(View.GONE);
         }
 
-        if(media.length == 0) {
+        if (media.length == 0) {
             if (!listing.isSafeZone())
                 ((View) pager.getParent()).setVisibility(View.GONE);
             else
                 pager.setVisibility(View.GONE);
-        }
-        else
+        } else
             pager.setAdapter(new ImageViewPageAdapter());
     }
 
     private final static int REQUEST_BUY = 3;
-    private void buyListing(){
-        if(requestPhoneNumber(REQUEST_BUY)){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+    private void buyListing() {
+        if (requestPhoneNumber(REQUEST_BUY)) {
+         /*   Dialog dialog = new Dialog(this, R.style.DialogTheme);
+            dialog.setContentView(R.layout.content_purchase);
+            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+            Button dateInput1 = dialog.findViewById(R.id.date1);
+            dateInput1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getDate(1, dateInput1);
+                }
+            });*/
+            AlertDialog.Builder builder = new AlertDialog.Builder(ListingDetailActivity.this);
 
             builder.setTitle("Request Purchase")
                     .setView(R.layout.content_purchase)
@@ -340,15 +352,14 @@ public class ListingDetailActivity extends TitleCompatActivity {
                     });
 
             final AlertDialog mainDialog = builder.create();
-
             mainDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
-                    final AlertDialog alertDialog = (AlertDialog)dialog;
+                    final AlertDialog alertDialog = (AlertDialog) dialog;
                     final Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                     final Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
-                    ((TextView)alertDialog.findViewById(R.id.safezone_enabled)).setText(listing.isSafeZone() ? R.string.safezone_enabled : R.string.safezone_disabled);
+                    ((TextView) alertDialog.findViewById(R.id.safezone_enabled)).setText(listing.isSafeZone() ? R.string.safezone_enabled : R.string.safezone_disabled);
 
                     final View appointmentButtons = alertDialog.findViewById(R.id.safezone_only);
 
@@ -356,9 +367,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                     date2 = null;
                     date3 = null;
 
-                    final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
-                    final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
-                    final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
+                    final Button dateInput1 = (Button) alertDialog.findViewById(R.id.date1);
+                    final Button dateInput2 = (Button) alertDialog.findViewById(R.id.date2);
+                    final Button dateInput3 = (Button) alertDialog.findViewById(R.id.date3);
 
                     dateInput1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -388,15 +399,15 @@ public class ListingDetailActivity extends TitleCompatActivity {
                             String dateString2 = "";
                             String dateString3 = "";
 
-                            if((date1 != null || date2 != null || date3 != null)){
+                            if ((date1 != null || date2 != null || date3 != null)) {
                                 SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
-                                if(date1 != null)
+                                if (date1 != null)
                                     dateString1 = dt1.format(date1);
-                                if(date2 != null)
+                                if (date2 != null)
                                     dateString2 = dt1.format(date2);
-                                if(date3 == null)
+                                if (date3 == null)
                                     dateString3 = dt1.format(date3);
-                            }else{
+                            } else {
                                 Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -440,17 +451,17 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 }
             });
 
-            if(!listing.isSafeZone() && requestSafezone == null){
+            if (!listing.isSafeZone() && requestSafezone == null) {
                 new AlertDialog.Builder(this).setTitle("Not SafeZone Verified")
                         .setMessage("This listing is not SafeZone verified. Would you like to request SafeZone Approval to the seller?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestSafezone = true;
-                        dialog.dismiss();
-                        mainDialog.show();
-                    }
-                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestSafezone = true;
+                                dialog.dismiss();
+                                mainDialog.show();
+                            }
+                        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         requestSafezone = false;
@@ -458,16 +469,18 @@ public class ListingDetailActivity extends TitleCompatActivity {
                         mainDialog.show();
                     }
                 }).create().show();
-            }else{
+            } else {
                 mainDialog.show();
             }
         }
-    }
+        }
+
     private Boolean requestSafezone = null;
 
     private final static int REQUEST_MAKEOFFER = 2;
-    private void makeOffer(){
-        if(requestPhoneNumber(REQUEST_MAKEOFFER)){
+
+    private void makeOffer() {
+        if (requestPhoneNumber(REQUEST_MAKEOFFER)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle("Make Offer")
@@ -485,17 +498,17 @@ public class ListingDetailActivity extends TitleCompatActivity {
             mainDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
-                    final AlertDialog alertDialog = (AlertDialog)dialog;
+                    final AlertDialog alertDialog = (AlertDialog) dialog;
                     final Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                     final Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
-                    ((TextView)alertDialog.findViewById(R.id.asking_price)).setText(String.format(Locale.CANADA, "$%.2f", listing.getAskingPrice()));
+                    ((TextView) alertDialog.findViewById(R.id.asking_price)).setText(String.format(Locale.CANADA, "$%.2f", listing.getAskingPrice()));
 
-                    if(listing.getAskingPrice() < 0){
-                        ((View)(alertDialog.findViewById(R.id.asking_price).getParent())).setVisibility(View.GONE);
+                    if (listing.getAskingPrice() < 0) {
+                        ((View) (alertDialog.findViewById(R.id.asking_price).getParent())).setVisibility(View.GONE);
                     }
 
-                    ((TextView)alertDialog.findViewById(R.id.safezone_enabled)).setText(listing.isSafeZone() ? R.string.safezone_enabled : R.string.safezone_disabled);
+                    ((TextView) alertDialog.findViewById(R.id.safezone_enabled)).setText(listing.isSafeZone() ? R.string.safezone_enabled : R.string.safezone_disabled);
 
                     final View appointmentButtons = alertDialog.findViewById(R.id.safezone_only);
 
@@ -504,9 +517,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                     date2 = null;
                     date3 = null;
 
-                    final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
-                    final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
-                    final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
+                    final Button dateInput1 = (Button) alertDialog.findViewById(R.id.date1);
+                    final Button dateInput2 = (Button) alertDialog.findViewById(R.id.date2);
+                    final Button dateInput3 = (Button) alertDialog.findViewById(R.id.date3);
 
                     dateInput1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -534,7 +547,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                         @Override
                         public void onClick(View v) {
 
-                            EditText offerPrice = (EditText)alertDialog.findViewById(R.id.offerPrice);
+                            EditText offerPrice = (EditText) alertDialog.findViewById(R.id.offerPrice);
 
                             boolean cancel = false;
                             double offer;
@@ -543,15 +556,15 @@ public class ListingDetailActivity extends TitleCompatActivity {
                             String dateString2 = "";
                             String dateString3 = "";
 
-                            if((date1 != null || date2 != null || date3 != null)){
+                            if ((date1 != null || date2 != null || date3 != null)) {
                                 SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
-                                if(date1 != null)
+                                if (date1 != null)
                                     dateString1 = dt1.format(date1);
-                                if(date2 != null)
+                                if (date2 != null)
                                     dateString2 = dt1.format(date2);
-                                if(date3 == null)
+                                if (date3 == null)
                                     dateString3 = dt1.format(date3);
-                            }else{
+                            } else {
                                 Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -559,11 +572,11 @@ public class ListingDetailActivity extends TitleCompatActivity {
                             positiveButton.setEnabled(false);
                             negativeButton.setEnabled(false);
 
-                            if(TextUtils.isEmpty(offerPrice.getText())){
+                            if (TextUtils.isEmpty(offerPrice.getText())) {
                                 cancel = true;
                                 offerPrice.setError("You must provide an offer value!");
-                            }else{
-                                try{
+                            } else {
+                                try {
                                     offer = Double.parseDouble(offerPrice.getText().toString().trim());
                                     APIConsumer.OfferOnListingAsyncTask task = APIConsumer.OfferOnListing(
                                             PreferencesManager.getUserInformation().getAccessToken(),
@@ -589,17 +602,17 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                     );
 
                                     task.execute();
-                                }catch(Exception e){
+                                } catch (Exception e) {
                                     cancel = true;
                                     offerPrice.setError("Invalid offer value!");
                                 }
                             }
 
-                            if(cancel){
+                            if (cancel) {
                                 offerPrice.requestFocus();
                                 positiveButton.setEnabled(true);
                                 negativeButton.setEnabled(true);
-                            }else{
+                            } else {
                                 dialog.dismiss();
                             }
                         }
@@ -614,17 +627,17 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 }
             });
 
-            if(!listing.isSafeZone() && requestSafezone == null){
+            if (!listing.isSafeZone() && requestSafezone == null) {
                 new AlertDialog.Builder(this).setTitle("Not SafeZone Verified")
                         .setMessage("This listing is not SafeZone verified. Would you like to request SafeZone Approval to the seller?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestSafezone = true;
-                        dialog.dismiss();
-                        mainDialog.show();
-                    }
-                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestSafezone = true;
+                                dialog.dismiss();
+                                mainDialog.show();
+                            }
+                        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         requestSafezone = false;
@@ -632,37 +645,37 @@ public class ListingDetailActivity extends TitleCompatActivity {
                         mainDialog.show();
                     }
                 }).create().show();
-            }else{
+            } else {
                 mainDialog.show();
             }
 
         }
     }
 
-    private static boolean isUnset(String value){
-        if(value == null)
+    private static boolean isUnset(String value) {
+        if (value == null)
             return true;
 
         String[] forbiddenValues = new String[]{
-            "none",
-            "N/A",
-            "0",
-            "not available",
-            "no",
-            "na",
-            "-"
+                "none",
+                "N/A",
+                "0",
+                "not available",
+                "no",
+                "na",
+                "-"
         };
 
-        for (String i : forbiddenValues){
-            if(i.trim().toLowerCase().contains(value.trim().toLowerCase()))
+        for (String i : forbiddenValues) {
+            if (i.trim().toLowerCase().contains(value.trim().toLowerCase()))
                 return true;
         }
 
         return false;
     }
 
-    private static boolean isUnset(Long value){
-        if(value == null)
+    private static boolean isUnset(Long value) {
+        if (value == null)
             return true;
 
         return false;
@@ -671,11 +684,11 @@ public class ListingDetailActivity extends TitleCompatActivity {
     private Date date1, date2, date3;
     private final static int REQUEST_HOLD = 1;
 
-    private void getDate(final int index, final Button sender){
+    private void getDate(final int index, final Button sender) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
 
-        SingleDateAndTimePickerDialog.Builder builder = new SingleDateAndTimePickerDialog.Builder(this)
+        SingleDateAndTimePickerDialog.Builder builder = new SingleDateAndTimePickerDialog.Builder(ListingDetailActivity.this)
                 .minDateRange(cal.getTime());
 
         cal.add(Calendar.DATE, 30);
@@ -683,15 +696,14 @@ public class ListingDetailActivity extends TitleCompatActivity {
         builder.maxDateRange(cal.getTime());
         builder.title("Appointment " + index);
         builder.minutesStep(15);
-
         builder.listener(new SingleDateAndTimePickerDialog.Listener() {
             @Override
             public void onDateSelected(Date date) {
-                if(index == 1){
+                if (index == 1) {
                     date1 = date;
-                }else if(index == 2){
+                } else if (index == 2) {
                     date2 = date;
-                }else{
+                } else {
                     date3 = date;
                 }
                 SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
@@ -702,8 +714,8 @@ public class ListingDetailActivity extends TitleCompatActivity {
         builder.display();
     }
 
-    private void holdListing(){
-        if(requestPhoneNumber(REQUEST_HOLD)){
+    private void holdListing() {
+        if (requestPhoneNumber(REQUEST_HOLD)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle("Request Hold")
@@ -716,11 +728,11 @@ public class ListingDetailActivity extends TitleCompatActivity {
             mainDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
-                    final AlertDialog alertDialog = (AlertDialog)dialog;
+                    final AlertDialog alertDialog = (AlertDialog) dialog;
                     final Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                     final Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
-                    ((TextView)alertDialog.findViewById(R.id.safezone_enabled)).setText(listing.isSafeZone() ? R.string.safezone_enabled : R.string.safezone_disabled);
+                    ((TextView) alertDialog.findViewById(R.id.safezone_enabled)).setText(listing.isSafeZone() ? R.string.safezone_enabled : R.string.safezone_disabled);
 
                     final View appointmentButtons = alertDialog.findViewById(R.id.safezone_only);
 
@@ -728,9 +740,9 @@ public class ListingDetailActivity extends TitleCompatActivity {
                     date2 = null;
                     date3 = null;
 
-                    final Button dateInput1 = (Button)alertDialog.findViewById(R.id.date1);
-                    final Button dateInput2 = (Button)alertDialog.findViewById(R.id.date2);
-                    final Button dateInput3 = (Button)alertDialog.findViewById(R.id.date3);
+                    final Button dateInput1 = (Button) alertDialog.findViewById(R.id.date1);
+                    final Button dateInput2 = (Button) alertDialog.findViewById(R.id.date2);
+                    final Button dateInput3 = (Button) alertDialog.findViewById(R.id.date3);
 
                     dateInput1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -761,15 +773,15 @@ public class ListingDetailActivity extends TitleCompatActivity {
                             String dateString2 = "";
                             String dateString3 = "";
 
-                            if((date1 != null || date2 != null || date3 != null)){
+                            if ((date1 != null || date2 != null || date3 != null)) {
                                 SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
-                                if(date1 != null)
+                                if (date1 != null)
                                     dateString1 = dt1.format(date1);
-                                if(date2 != null)
+                                if (date2 != null)
                                     dateString2 = dt1.format(date2);
-                                if(date3 == null)
+                                if (date3 == null)
                                     dateString3 = dt1.format(date3);
-                            }else{
+                            } else {
                                 Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -812,7 +824,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                 }
             });
 
-            if(!listing.isSafeZone() && requestSafezone == null){
+            if (!listing.isSafeZone() && requestSafezone == null) {
                 new AlertDialog.Builder(this).setTitle("Not SafeZone Verified")
                         .setMessage("This listing is not SafeZone verified. Would you like to request SafeZone Approval to the seller?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -832,49 +844,49 @@ public class ListingDetailActivity extends TitleCompatActivity {
                             }
                         })
                         .create().show();
-            }else{
+            } else {
                 mainDialog.show();
             }
         }
     }
 
-    private void likeListing(){
+    private void likeListing() {
         boolean liked = PreferencesManager.hasLiked(listing.getId());
 
-        if(liked){
+        if (liked) {
             PreferencesManager.removeLike(listing.getId());
-        }else{
+        } else {
             PreferencesManager.addLike(listing.getId());
         }
 
         updateLikeButton(!liked);
     }
 
-    private void updateLikeButton(boolean liked){
-        ImageView likeImage = (ImageView)likeListing.getChildAt(0);
-        TextView likeText = (TextView)likeListing.getChildAt(1);
+    private void updateLikeButton(boolean liked) {
+        ImageView likeImage = (ImageView) likeListing.getChildAt(0);
+        TextView likeText = (TextView) likeListing.getChildAt(1);
         likeImage.setImageResource(liked ? R.drawable.like_active : R.drawable.like_icon);
         likeText.setText(liked ? "Unlike" : "Like");
     }
-    private void shareListing(){
+
+    private void shareListing() {
         ShareLinkContent.Builder builder = new ShareLinkContent.Builder()
                 .setContentUrl(Uri.parse("http://dealerwerx.com"))
                 .setContentTitle(listing.getVehicle().getTitle())
                 .setContentDescription(listing.getVehicle().getDescription());
-        if(media != null && media.length > 0){
+        if (media != null && media.length > 0) {
             builder.setImageUrl(Uri.parse(media[0].getImageUrl()));
         }
         ShareLinkContent content = builder.build();
         ShareDialog.show(this, content);
     }
 
-    private boolean requestPhoneNumber(int requestCode){
-        if(PreferencesManager.getUserInformation().getPhoneNumber() == null){
+    private boolean requestPhoneNumber(int requestCode) {
+        if (PreferencesManager.getUserInformation().getPhoneNumber() == null) {
             Intent intent = new Intent(this, RequireMoreInformationActivity.class);
             startActivityForResult(intent, requestCode);
             return false;
-        }
-        else{
+        } else {
             return true;
         }
     }
@@ -883,8 +895,8 @@ public class ListingDetailActivity extends TitleCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode != 1) return;
-        switch(requestCode){
+        if (resultCode != 1) return;
+        switch (requestCode) {
             case REQUEST_BUY:
                 buyListing();
                 break;
@@ -897,7 +909,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
         }
     }
 
-    private class ImageViewPageAdapter extends PagerAdapter{
+    private class ImageViewPageAdapter extends PagerAdapter {
 
         @Override
         public int getCount() {
@@ -925,15 +937,15 @@ public class ListingDetailActivity extends TitleCompatActivity {
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            final Dialog nagDialog = new Dialog(ListingDetailActivity.this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                            final Dialog nagDialog = new Dialog(ListingDetailActivity.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
                             nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             nagDialog.setContentView(R.layout.preview_image);
-                            Button btnClose = (Button)nagDialog.findViewById(R.id.action_close);
-                            Button btnDelete = (Button)nagDialog.findViewById(R.id.action_delete);
-                            final ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.preview);
+                            Button btnClose = (Button) nagDialog.findViewById(R.id.action_close);
+                            Button btnDelete = (Button) nagDialog.findViewById(R.id.action_delete);
+                            final ImageView ivPreview = (ImageView) nagDialog.findViewById(R.id.preview);
 
-                            FrameLayout.LayoutParams ivParams = (FrameLayout.LayoutParams)ivPreview.getLayoutParams();
-                            ivParams.setMargins(0,0,0,0);
+                            FrameLayout.LayoutParams ivParams = (FrameLayout.LayoutParams) ivPreview.getLayoutParams();
+                            ivParams.setMargins(0, 0, 0, 0);
                             ivPreview.setLayoutParams(ivParams);
 
                             btnDelete.setVisibility(View.INVISIBLE);
@@ -991,7 +1003,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((LinearLayout)object);
+            container.removeView((LinearLayout) object);
         }
     }
 }

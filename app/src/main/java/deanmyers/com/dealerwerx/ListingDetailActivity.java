@@ -1,5 +1,6 @@
 package deanmyers.com.dealerwerx;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -59,6 +62,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
     private LinearLayout likeListing;
     private LinearLayout shareListing;
     private ViewPager pager;
+    SingleDateAndTimePickerDialog.Builder singleBuilder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -405,7 +409,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                     dateString1 = dt1.format(date1);
                                 if (date2 != null)
                                     dateString2 = dt1.format(date2);
-                                if (date3 == null)
+                                if (date3 != null)
                                     dateString3 = dt1.format(date3);
                             } else {
                                 Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
@@ -562,7 +566,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                     dateString1 = dt1.format(date1);
                                 if (date2 != null)
                                     dateString2 = dt1.format(date2);
-                                if (date3 == null)
+                                if (date3 != null)
                                     dateString3 = dt1.format(date3);
                             } else {
                                 Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();
@@ -685,33 +689,78 @@ public class ListingDetailActivity extends TitleCompatActivity {
     private final static int REQUEST_HOLD = 1;
 
     private void getDate(final int index, final Button sender) {
-        Calendar cal = Calendar.getInstance();
+        Date dateDisplay=null;
+        Dialog dialog =new Dialog(this, R.style.DialogTheme);
+        dialog.setContentView(R.layout.dialog_custom_time_picker);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        final SingleDateAndTimePicker singleDateAndTimePicker = dialog.findViewById(R.id.picker);
+        Calendar cal = Calendar.getInstance(Locale.CANADA);
         cal.setTime(new Date());
+        singleDateAndTimePicker.setDefaultDate(cal.getTime());
 
-        SingleDateAndTimePickerDialog.Builder builder = new SingleDateAndTimePickerDialog.Builder(ListingDetailActivity.this)
-                .minDateRange(cal.getTime());
+        //cal.add(Calendar.DATE, 30);
+        //
+        singleDateAndTimePicker.setCustomLocale(Locale.CANADA);
+        TextView mTextHeader=dialog.findViewById(R.id.sheetTitle);
+        mTextHeader.setText("Appointment " + index);
+        TextView mBtnOk=dialog.findViewById(R.id.buttonOk);
+         mBtnOk.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 if (index == 1) {
+                     date1 = singleDateAndTimePicker.getDate();
+                 } else if (index == 2) {
+                     date2 = singleDateAndTimePicker.getDate();
+                 } else {
+                     date3 = singleDateAndTimePicker.getDate();
+                 }
+                 SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
+                 sender.setText(dt1.format(singleDateAndTimePicker.getDate()));
+                 dialog.dismiss();
+             }
+         });
 
-        cal.add(Calendar.DATE, 30);
 
-        builder.maxDateRange(cal.getTime());
-        builder.title("Appointment " + index);
-        builder.minutesStep(15);
-        builder.listener(new SingleDateAndTimePickerDialog.Listener() {
-            @Override
-            public void onDateSelected(Date date) {
-                if (index == 1) {
-                    date1 = date;
-                } else if (index == 2) {
-                    date2 = date;
-                } else {
-                    date3 = date;
-                }
-                SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
-                sender.setText(dt1.format(date));
+        SingleDateAndTimePicker.OnDateChangedListener changeListener = (displayed, date) -> {
+            if (index == 1) {
+                date1 = date;
+            } else if (index == 2) {
+                date2 = date;
+            } else {
+                date3 = date;
             }
-        });
+            SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
+            sender.setText(dt1.format(date));
+        };
 
-        builder.display();
+        singleDateAndTimePicker.addOnDateChangedListener(changeListener);
+        dialog.show();
+        /*DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
+            // TODO Auto-generated method stub
+            cal.set(Calendar.YEAR, year);
+            cal.set(Calendar.MONTH, monthOfYear);
+            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            if (index == 1) {
+                date1 = cal.getTime();
+            } else if (index == 2) {
+                date2 = cal.getTime();
+            } else {
+                date3 = cal.getTime();
+            }
+            SimpleDateFormat dt1 = new SimpleDateFormat("EEEE, MMMM dd hh:mm a", Locale.CANADA);
+            sender.setText(dt1.format(cal.getTime()));
+
+
+        };
+        new DatePickerDialog(ListingDetailActivity.this, date, cal
+                .get(Calendar.YEAR), cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)).show();*/
+    }
+
+    private void display(String toDisplay) {
+        Toast.makeText(this, toDisplay, Toast.LENGTH_SHORT).show();
     }
 
     private void holdListing() {
@@ -779,7 +828,7 @@ public class ListingDetailActivity extends TitleCompatActivity {
                                     dateString1 = dt1.format(date1);
                                 if (date2 != null)
                                     dateString2 = dt1.format(date2);
-                                if (date3 == null)
+                                if (date3 != null)
                                     dateString3 = dt1.format(date3);
                             } else {
                                 Toast.makeText(ListingDetailActivity.this, "You must select at least one appointment preference date.", Toast.LENGTH_LONG).show();

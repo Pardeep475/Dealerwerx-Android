@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import deanmyers.com.dealerwerx.API.APIConsumer;
 import deanmyers.com.dealerwerx.API.APIResponder;
@@ -184,7 +185,7 @@ public class AddListingFragment extends TitleCompatFragment {
             forwardType = (VehicleType)mVehicleTypes.getSelectedItem();
 
         AddListingExtendedFragment fragment = new AddListingExtendedFragment();
-        FragmentManager manager = getFragmentManager();
+        FragmentManager manager = requireActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
         Bundle arguments = getArguments();
@@ -194,7 +195,7 @@ public class AddListingFragment extends TitleCompatFragment {
         arguments.putChar("type", forwardType.asChar());
         fragment.setArguments(arguments);
 
-        ((AddListingActivity)getActivity()).setDecodeResult(result);
+        ((AddListingActivity) requireActivity()).setDecodeResult(result);
 
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);

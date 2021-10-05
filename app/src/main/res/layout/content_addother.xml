@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <include layout="@layout/content_addimages"/>
-    <TextView
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/listing_information"
-        android:textSize="17sp"
-        android:textAlignment="center"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        />
-    <include layout="@layout/content_listingfields"/>
-    <include layout="@layout/content_submitbutton"/>
-</LinearLayout>
+        android:orientation="vertical">
+
+        <include layout="@layout/content_addimages" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/listing_information"
+            android:textAlignment="center"
+            android:textSize="17sp" />
+
+        <include layout="@layout/content_listingfields" />
+
+        <include layout="@layout/content_submitbutton" />
+    </LinearLayout>
+</ScrollView>

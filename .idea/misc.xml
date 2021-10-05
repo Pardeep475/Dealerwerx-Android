@@ -18,6 +18,16 @@
         <entry key="..\:/IntellisenseData/Dealerwerx-Android/app/src/main/res/layout/info_window.xml" value="0.15806159420289856" />
         <entry key="..\:/IntellisenseData/Dealerwerx-Android/app/src/main/res/layout/preview_image.xml" value="0.15806159420289856" />
         <entry key="..\:/IntellisenseData/Dealerwerx-Android/app/src/main/res/layout/rows_listings.xml" value="0.17074275362318841" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/activity_addlisting.xml" value="0.21" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/activity_search.xml" value="0.18802083333333333" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_addboat.xml" value="0.134375" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_addcar.xml" value="0.22" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_addequipment.xml" value="0.134375" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_addlisting.xml" value="0.18802083333333333" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_addmotorcycle.xml" value="0.134375" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_addother.xml" value="0.134375" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_extrainformation.xml" value="0.2" />
+        <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_submitbutton.xml" value="0.134375" />
       </map>
     </option>
   </component>

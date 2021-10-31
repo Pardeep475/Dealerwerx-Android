@@ -22,6 +22,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +71,15 @@ public class LookingForActivity extends NavigationActivity implements LocationLi
 
         setViewTitlePrimary("Looking To Buy");
         setViewTitle("All Listings");
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LookingForActivity.this, AddListingActivity.class);
+                startActivity(intent);
+            }
+        });
 
         srl = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_layout);
 

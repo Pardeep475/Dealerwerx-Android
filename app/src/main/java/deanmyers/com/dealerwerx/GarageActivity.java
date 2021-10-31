@@ -52,7 +52,7 @@ public class GarageActivity extends NavigationActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listings);
 
-        setViewTitlePrimary("Garage");
+        setViewTitlePrimary("My Garage");
         setViewTitle("My Listings");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

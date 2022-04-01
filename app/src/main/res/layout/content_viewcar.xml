@@ -7,7 +7,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <deanmyers.com.dealerwerx.Views.SquareViewPager
+    <deanmyers.project.dealerwerx.Views.SquareViewPager
         android:id="@+id/image_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

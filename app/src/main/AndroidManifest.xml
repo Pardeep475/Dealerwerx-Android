@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="deanmyers.com.dealerwerx">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="deanmyers.project.dealerwerx">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,13 +22,13 @@
         android:required="false" />
 
     <application
-        android:name=".DealerwerxApplication"
+        android:name="deanmyers.project.dealerwerx.DealerwerxApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:largeHeap="true">
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -36,10 +37,11 @@
             android:value="AIzaSyDwSxieQROxRytv4EX7_p8I49-UYDvfUDQ" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name="deanmyers.project.dealerwerx.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/DarkAppTheme"
+            android:exported="true"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,127 +50,132 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
+            android:name="deanmyers.project.dealerwerx.RegisterActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/DarkAppTheme" />
+
         <activity
-            android:name=".TermsOfService"
+            android:name="deanmyers.project.dealerwerx.TermsOfService"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/DarkAppTheme">
+            android:theme="@style/DarkAppTheme"
+            android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <action android:name="android.intent.action.VIEW" />
 
-                <data android:scheme="deanmyers.com.dealerwerx.TermsOfService" />
+                <data
+                    android:scheme="deanmyers.project.dealerwerx.TermsOfService"
+                    tools:ignore="AppLinkUrlError" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".ListingsActivity"
+            android:name="deanmyers.project.dealerwerx.ListingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".LookingForActivity"
+            android:name="deanmyers.project.dealerwerx.LookingForActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".VideosActivity"
+            android:name="deanmyers.project.dealerwerx.VideosActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ScavengerListingsActivity"
+            android:name="deanmyers.project.dealerwerx.ScavengerListingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ListingDetailActivity"
+            android:name="deanmyers.project.dealerwerx.ListingDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ScavengerListingDetailActivity"
+            android:name="deanmyers.project.dealerwerx.ScavengerListingDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".AddListingActivity"
+            android:name="deanmyers.project.dealerwerx.AddListingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".UpdateListingActivity"
+            android:name="deanmyers.project.dealerwerx.UpdateListingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".RequireMoreInformationActivity"
+            android:name="deanmyers.project.dealerwerx.RequireMoreInformationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".GarageActivity"
+            android:name="deanmyers.project.dealerwerx.GarageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ListingPickerActivity"
+            android:name="deanmyers.project.dealerwerx.ListingPickerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".MyBeaconsActivity"
+            android:name="deanmyers.project.dealerwerx.MyBeaconsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".NearMeListingsActivity"
+            android:name="deanmyers.project.dealerwerx.NearMeListingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".LikedListingsActivity"
+            android:name="deanmyers.project.dealerwerx.LikedListingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".SafeZoneActivity"
+            android:name="deanmyers.project.dealerwerx.SafeZoneActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".AddBeaconActivity"
+            android:name="deanmyers.project.dealerwerx.AddBeaconActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".SearchActivity"
+            android:name="deanmyers.project.dealerwerx.SearchActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".CheckinActivity"
+            android:name="deanmyers.project.dealerwerx.CheckinActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".SettingsActivity"
+            android:name="deanmyers.project.dealerwerx.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
@@ -194,10 +201,11 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <receiver android:name=".Services.BootReceiver" />
+        <receiver
+            android:name="deanmyers.project.dealerwerx.Services.BootReceiver"
+            android:exported="true"/>
 
-        <service android:name=".Services.BeaconService"
-            />
+        <service android:name="deanmyers.project.dealerwerx.Services.BeaconService" />
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
@@ -205,7 +213,7 @@
             android:exported="true" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name="deanmyers.project.dealerwerx.MapsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"

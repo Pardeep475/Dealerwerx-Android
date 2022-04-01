@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     >
 
-<deanmyers.com.dealerwerx.Layouts.SlidingUpPanelLayout
+<deanmyers.project.dealerwerx.Layouts.SlidingUpPanelLayout
 android:id="@+id/slidingLayout"
 android:gravity="bottom"
 map:shadowHeight="0dp"
@@ -24,7 +24,7 @@ android:layout_height="fill_parent">
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        tools:context="deanmyers.com.dealerwerx.MapsActivity"
+        tools:context="deanmyers.project.dealerwerx.MapsActivity"
         map:mapType="normal"
         map:uiCompass="true"
         map:uiRotateGestures="true"
@@ -68,5 +68,5 @@ android:layout_height="fill_parent">
         android:layout_below="@id/transparentView"
         android:smoothScrollbar="false"/>
 </RelativeLayout>
-</deanmyers.com.dealerwerx.Layouts.SlidingUpPanelLayout>
+</deanmyers.project.dealerwerx.Layouts.SlidingUpPanelLayout>
 </FrameLayout>

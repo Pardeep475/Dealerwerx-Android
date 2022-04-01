@@ -29,6 +29,7 @@
         <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_extrainformation.xml" value="0.2" />
         <entry key="..\:/Raman/Android Project/DealerWerx/app/src/main/res/layout/content_submitbutton.xml" value="0.134375" />
         <entry key="app/src/main/res/layout/activity_listings.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/layout/activity_lookingfor.xml" value="0.2046875" />
         <entry key="app/src/main/res/layout/content_listings.xml" value="0.2046875" />
         <entry key="app/src/main/res/layout/content_lookingfor.xml" value="0.2046875" />
@@ -80,7 +81,7 @@
       </value>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

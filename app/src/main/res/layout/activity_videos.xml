@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context="deanmyers.com.dealerwerx.ListingsActivity">
+        tools:context="deanmyers.project.dealerwerx.ListingsActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"

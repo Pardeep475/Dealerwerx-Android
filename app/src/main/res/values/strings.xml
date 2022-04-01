@@ -15,7 +15,7 @@
     <string name="copyright">© Dealerwerx 2016 All Rights Reserved</string>
     <string name="action_register">Register</string>
     <string name="action_go_back">Go Back</string>
-    <string name="terms_of_service_accept">I Accept the <a href="deanmyers.com.dealerwerx.TermsOfService://show">Privacy Policy</a></string>
+    <string name="terms_of_service_accept">I Accept the <a href="deanmyers.project.dealerwerx.TermsOfService://show">Privacy Policy</a></string>
 
 
 

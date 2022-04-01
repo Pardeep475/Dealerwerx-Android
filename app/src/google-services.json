@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "266814421758",
+    "project_id": "dealerwerx-340e7",
+    "storage_bucket": "dealerwerx-340e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266814421758:android:03242f48f6a24f96e183af",
+        "android_client_info": {
+          "package_name": "deanmyers.project.dealerwerx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "266814421758-amrk8n0s5h3o1shfn1e9mso89rkm9m99.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "deanmyers.project.dealerwerx",
+            "certificate_hash": "1f41749e3185480a125e38f39733b3d77a48fdcd"
+          }
+        },
+        {
+          "client_id": "266814421758-rvtmm04ls0n7uo5oclf4kmg8g003ro5s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "deanmyers.project.dealerwerx",
+            "certificate_hash": "41f4fcda71e948cc2d4430ea0b12cec8f731121d"
+          }
+        },
+        {
+          "client_id": "266814421758-21545mgffsc98tuaeifinpnbgpl40u0m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNT4RRPoioEUmbiS2-WVXxBQg1_Op109Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "266814421758-21545mgffsc98tuaeifinpnbgpl40u0m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
